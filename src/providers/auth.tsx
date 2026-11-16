@@ -26,11 +26,14 @@ export function useCan() {
 export function useLogout() {
   const qc = useQueryClient();
   const router = useRouter();
+  const { data: me } = useMe();
   return useCallback(async () => {
+    // Partners go back to their own sign-in page.
+    const signIn = me?.accountType === "PARTNER" ? "/partner/login" : "/login";
     await api.post("/auth/logout").catch(() => undefined);
     qc.clear();
-    router.replace("/login");
-  }, [qc, router]);
+    router.replace(signIn);
+  }, [qc, router, me?.accountType]);
 }
 
 /** Landing page after sign-in: the first section the user's role can open. */

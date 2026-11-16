@@ -12,6 +12,7 @@ import { api, ApiError, errorMessage } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { date } from "@/lib/format";
 import type { Role, Settings, User } from "@/lib/types";
+import { useAuthOptions } from "@/lib/auth-options";
 import { useCan, useMe } from "@/providers/auth";
 
 export default function SettingsPage() {
@@ -37,6 +38,7 @@ function useAssignableRoles() {
 }
 
 function StoreSettings() {
+  const authOptions = useAuthOptions();
   const qc = useQueryClient();
   const { data, isLoading, error } = useQuery({ queryKey: ["settings"], queryFn: () => api.get<Settings>("/settings") });
   const { register, handleSubmit, control } = useForm<Settings>({ values: data });
@@ -104,6 +106,11 @@ function StoreSettings() {
             <Checkbox label="Verify the customer's mobile with an SMS OTP before applying a partner code" checked={!!field.value} onCheckedChange={field.onChange} />
           )}
         />
+        {authOptions.data && !authOptions.data.smsOtp && (
+          <p className="-mt-2 text-xs text-muted-foreground">
+            SMS isn&apos;t set up yet, so partner codes apply without an OTP until it is.
+          </p>
+        )}
 
         <h3 className="border-t border-border pt-4 text-sm font-semibold">Compliance</h3>
         <div className="grid gap-4 sm:grid-cols-2">

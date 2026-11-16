@@ -5,11 +5,12 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Gem, KeyRound, LogIn } from "lucide-react";
-import { Alert, Button, Field, HallmarkTile, Input, PasswordInput } from "@/components/ui";
-import { api, errorMessage } from "@/lib/api";
+import { KeyRound, LogIn } from "lucide-react";
+import { Alert, Button, Field, Input, PasswordInput } from "@/components/ui";
+import { api, ApiError, errorMessage } from "@/lib/api";
 import type { Me } from "@/lib/types";
 import { homeFor, ME_KEY } from "@/providers/auth";
+import { SIGN_IN_PATH, type SignInPortal } from "../auth-shell";
 
 interface Credentials {
   email: string;
@@ -18,12 +19,15 @@ interface Credentials {
 
 type LoginResponse = { user: Me } | { twoFactorRequired: true; challengeToken: string };
 
-export function LoginForm() {
+/** Sign-in form for one of the two pages; the API turns away accounts that belong on the other page. */
+export function LoginForm({ portal }: { portal: SignInPortal }) {
   const router = useRouter();
   const params = useSearchParams();
   const qc = useQueryClient();
   const [challengeToken, setChallengeToken] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Set when this account belongs on the other sign-in page.
+  const [otherPage, setOtherPage] = useState(false);
   const [pending, setPending] = useState(false);
   const [code, setCode] = useState("");
   const { register, handleSubmit } = useForm<Credentials>();
@@ -36,10 +40,12 @@ export function LoginForm() {
 
   const run = async (fn: () => Promise<void>) => {
     setError(null);
+    setOtherPage(false);
     setPending(true);
     try {
       await fn();
     } catch (err) {
+      setOtherPage(err instanceof ApiError && err.code === "WRONG_SIGN_IN_PAGE");
       setError(errorMessage(err));
     } finally {
       setPending(false);
@@ -48,7 +54,7 @@ export function LoginForm() {
 
   const onPassword = handleSubmit((values) =>
     run(async () => {
-      const res = await api.post<LoginResponse>("/auth/login", values);
+      const res = await api.post<LoginResponse>("/auth/login", { ...values, portal });
       if ("user" in res) finish(res.user);
       else setChallengeToken(res.challengeToken);
     }),
@@ -64,9 +70,9 @@ export function LoginForm() {
 
   if (challengeToken) {
     return (
-      <form onSubmit={onCode} className="w-full max-w-sm space-y-5">
-        <div>
-          <h1 className="font-heading text-3xl font-semibold">Two-step verification</h1>
+      <form onSubmit={onCode} className="w-full space-y-5">
+        <div className="text-center">
+          <h1 className="font-heading text-2xl font-semibold">Two-step verification</h1>
           <p className="mt-1 text-sm text-muted-foreground">
             Enter the 6-digit code from your authenticator app, or one of your recovery codes.
           </p>
@@ -96,14 +102,20 @@ export function LoginForm() {
     );
   }
 
+  const other: SignInPortal = portal === "staff" ? "partner" : "staff";
   return (
-    <form onSubmit={onPassword} className="w-full max-w-sm space-y-5">
-      <div>
-        <HallmarkTile icon={Gem} className="mb-6 lg:hidden" />
-        <h1 className="font-heading text-3xl font-semibold">Sign in</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Owners, staff and partners use the same portal.</p>
-      </div>
-      {error && <Alert tone="danger">{error}</Alert>}
+    <form onSubmit={onPassword} className="w-full space-y-5">
+      <h1 className="text-center font-heading text-2xl font-semibold">{portal === "staff" ? "Sign in" : "Partner sign-in"}</h1>
+      {error && (
+        <Alert tone="danger">
+          {error}
+          {otherPage && (
+            <Link href={SIGN_IN_PATH[other]} className="mt-1 block font-medium underline underline-offset-2">
+              Go to the {other === "partner" ? "partner" : "staff"} sign-in
+            </Link>
+          )}
+        </Alert>
+      )}
       <Field label="Email" required>
         <Input type="email" autoComplete="email" autoFocus required {...register("email", { required: true })} />
       </Field>
@@ -113,7 +125,10 @@ export function LoginForm() {
       <Button type="submit" className="w-full" loading={pending} icon={<LogIn />}>
         Sign in
       </Button>
-      <Link href="/forgot-password" className="block text-center text-sm text-muted-foreground hover:text-foreground">
+      <Link
+        href={portal === "partner" ? "/forgot-password?for=partner" : "/forgot-password"}
+        className="block text-center text-sm text-muted-foreground hover:text-foreground"
+      >
         Forgot password?
       </Link>
     </form>

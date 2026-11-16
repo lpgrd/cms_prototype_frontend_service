@@ -5,7 +5,7 @@ import { ResetPasswordForm } from "./reset-form";
 
 export default function ResetPasswordPage() {
   return (
-    <AuthShell>
+    <AuthShell footer={{ href: "/login", label: "Back to sign in" }}>
       <Suspense fallback={<Spinner />}>
         <ResetPasswordForm />
       </Suspense>

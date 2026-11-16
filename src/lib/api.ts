@@ -40,8 +40,10 @@ async function request<T>(method: string, path: string, body?: unknown, query?: 
     const err = data?.error ?? {};
     if (res.status === 401 && typeof window !== "undefined" && !path.startsWith("/auth/")) {
       // Full navigation on purpose: drops all cached client state from the expired session.
+      const here = window.location.pathname;
+      const signIn = here === "/partner" || here.startsWith("/partner/") ? "/partner/login" : "/login";
       // eslint-disable-next-line @next/next/no-location-assign-relative-destination
-      window.location.href = `/login?next=${encodeURIComponent(window.location.pathname)}`;
+      window.location.href = `${signIn}?next=${encodeURIComponent(here)}`;
     }
     throw new ApiError(res.status, err.code ?? "ERROR", err.message ?? "Request failed", err.details);
   }

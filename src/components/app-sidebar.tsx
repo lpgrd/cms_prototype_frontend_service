@@ -41,7 +41,7 @@ export function AppSidebar({ user }: { user: Me }) {
               <span className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 <Gem className="size-4" />
               </span>
-              <span className="font-heading text-base font-semibold">Jeweller Portal</span>
+              <span className="font-heading text-base font-semibold">GJ-CRM</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>

@@ -20,9 +20,10 @@ export function ResetPasswordForm() {
     setPending(true);
     setError(null);
     try {
-      await api.post("/auth/reset-password", { token, password });
+      // The API says which sign-in page this account uses (staff or partner).
+      const res = await api.post<{ signInAt?: string }>("/auth/reset-password", { token, password });
       toast.success("Password updated. Sign in with your new password.");
-      router.replace("/login");
+      router.replace(res?.signInAt === "/partner/login" ? "/partner/login" : "/login");
     } catch (err) {
       setError(errorMessage(err));
     } finally {

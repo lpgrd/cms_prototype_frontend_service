@@ -11,8 +11,8 @@ const geistMono = Geist_Mono({subsets:['latin'],variable:'--font-mono'});
 
 
 export const metadata: Metadata = {
-  title: { default: "Jeweller Portal", template: "%s | Jeweller Portal" },
-  description: "Customer, campaign and partner management for the store",
+  title: { default: "GJ-CRM", template: "%s | GJ-CRM" },
+  description: "GJ-CRM",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
