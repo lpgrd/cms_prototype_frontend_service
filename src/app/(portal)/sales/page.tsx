@@ -200,7 +200,7 @@ function CancelSaleDialog({ sale, onClose }: { sale: PartnerSale; onClose: () =>
       title={`Cancel sale #${sale.number}?`}
       description={
         <>
-          {sale.influencer?.name} loses the {points(sale.pointsAwarded)} earned on it, and the customer can use this campaign&apos;s offer again.
+          {sale.influencer?.name} loses the {points(sale.pointsAwarded)} earned on it, and it no longer counts in the customer&apos;s purchases or the campaign&apos;s figures.
         </>
       }
       confirmLabel="Cancel sale"

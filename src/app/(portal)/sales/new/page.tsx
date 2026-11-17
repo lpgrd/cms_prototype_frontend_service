@@ -185,7 +185,7 @@ export default function PartnerSalePage() {
 
           <Card title="Customer" icon={UserRound} actions={<span className="text-xs text-muted-foreground">Optional</span>}>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Mobile number" hint={otpRequired ? "Needed: the offer applies once the customer confirms an OTP." : "Links the sale to the customer and allows one offer per customer."}>
+              <Field label="Mobile number" hint={otpRequired ? "Needed: the offer applies once the customer confirms an OTP." : "Adds the sale to the customer's history."}>
                 <CustomerMobileInput field={register("mobile")} value={mobile} onPick={(m) => setValue("mobile", m, { shouldDirty: true })} />
               </Field>
               {mobileValid && lookup.isFetching && !lookup.data && (
