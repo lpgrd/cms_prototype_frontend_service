@@ -13,9 +13,10 @@ import { Alert, Badge, Button, Card, Checkbox, Field, FormDatePicker, FormSelect
 import { api, errorMessage } from "@/lib/api";
 import { date, inr, inrShort, plural, points } from "@/lib/format";
 import type { BillPreview, Customer, MetalType, OtpChallenge, Transaction } from "@/lib/types";
+import { useDebounced } from "@/hooks/use-debounced";
 import { useCan } from "@/providers/auth";
 import { CustomerFormButton } from "../customers/customer-form";
-import { CustomerMobileInput } from "./customer-search";
+import { CustomerMobileInput } from "@/components/customer-mobile-input";
 import { paidSoFar, PaymentSection, type PaymentFormValues } from "./payment-section";
 
 interface ItemForm {
@@ -64,16 +65,6 @@ const digits = (v: string) => v.replace(/\D/g, "").slice(-10);
 const isMobile = (v: string) => /^[6-9]\d{9}$/.test(digits(v));
 const n = (v: number | undefined) => (Number.isFinite(v) ? (v as number) : 0);
 const upper = (v: string | undefined) => v?.trim().toUpperCase() || undefined;
-
-/** Debounces a value so the bill preview is not recomputed on every keystroke. */
-function useDebounced<T>(value: T, ms = 350) {
-  const [v, setV] = useState(value);
-  useEffect(() => {
-    const t = setTimeout(() => setV(value), ms);
-    return () => clearTimeout(t);
-  }, [value, ms]);
-  return v;
-}
 
 export default function BillingPage() {
   const router = useRouter();

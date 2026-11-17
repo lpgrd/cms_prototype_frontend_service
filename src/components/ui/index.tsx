@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { BackButton } from "../layout/back-button";
-import { NAV } from "../layout/nav";
+import { navItemFor } from "../layout/nav";
 import { Skeleton } from "./skeleton";
 import { Button as ShadcnButton } from "./button";
 import { Checkbox as ShadcnCheckbox } from "./checkbox";
@@ -171,7 +171,7 @@ export function PageHeader({
   icon?: LucideIcon;
 }) {
   const pathname = usePathname();
-  const section = NAV.find((n) => pathname === n.href || pathname.startsWith(`${n.href}/`));
+  const section = navItemFor(pathname);
   const Icon = icon ?? section?.icon;
   return (
     <div className={cn("mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between", className)}>

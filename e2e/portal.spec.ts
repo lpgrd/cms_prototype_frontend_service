@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { FULL_BILLING } from "../src/lib/features";
 import { signIn, uniqueMobile } from "./helpers";
 
 test.describe("signed out", () => {
@@ -18,6 +19,7 @@ test.describe("signed out", () => {
 });
 
 test("owner bills a new customer and sees the invoice", async ({ page }) => {
+  test.skip(!FULL_BILLING, "Itemised billing is switched off in src/lib/features.ts");
   await signIn(page);
   await page.getByRole("link", { name: "New bill" }).click();
 
@@ -40,6 +42,7 @@ test("owner bills a new customer and sees the invoice", async ({ page }) => {
 });
 
 test("hallmarked gold cannot be billed without a HUID", async ({ page }) => {
+  test.skip(!FULL_BILLING, "Itemised billing is switched off in src/lib/features.ts");
   await signIn(page);
   await page.goto("/billing");
   await page.getByRole("combobox", { name: /^Mobile number/ }).fill(uniqueMobile());

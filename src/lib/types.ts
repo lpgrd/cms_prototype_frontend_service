@@ -347,12 +347,72 @@ export interface Redemption {
   id: string;
   campaignId: string;
   influencerId: string;
-  customerId: string;
-  transactionId: string;
+  customerId: string | null;
+  /** A redemption is on either a full bill or a partner sale. */
+  transactionId: string | null;
+  partnerSaleId: string | null;
   discountAmount: number;
   pointsAwarded: number;
   status: "ACTIVE" | "REVERSED";
   createdAt: string;
+}
+
+/** A sale billed in the store's own system where the customer used a partner code. */
+export interface PartnerSale {
+  id: string;
+  number: number;
+  billReference: string | null;
+  customerId: string | null;
+  customer?: Pick<Customer, "id" | "name" | "mobile"> | null;
+  campaignId: string;
+  campaign?: Pick<Campaign, "id" | "name">;
+  influencerId: string;
+  influencer?: Pick<Influencer, "id" | "name" | "type">;
+  code: string;
+  billAmount: number;
+  makingCharges: number | null;
+  discountAmount: number;
+  finalAmount: number;
+  pointsAwarded: number;
+  status: TransactionStatus;
+  recordedBy?: { id: string; name: string };
+  notes: string | null;
+  cancelledAt: string | null;
+  cancelReason: string | null;
+  createdAt: string;
+}
+
+export interface SaleTotals {
+  sales: number;
+  billAmount: number;
+  discountAmount: number;
+  finalAmount: number;
+  pointsAwarded: number;
+}
+
+export interface SaleAmounts {
+  billAmount: number;
+  discountAmount: number;
+  finalAmount: number;
+  pointsAwarded: number;
+}
+
+/** What the counter sees after scanning a partner code. */
+export interface SalePreview {
+  offer: {
+    code: string;
+    description: string;
+    campaign: { id: string; name: string; endsAt: string | null; terms: string | null };
+    partner: { id: string; name: string; type: PartnerType; contactPerson: string | null; instagramHandle: string | null };
+  } | null;
+  /** Why the code cannot be used for this sale; the partner is still shown when the code itself is valid. */
+  codeError: { code: string; message: string } | null;
+  /** Null until the amounts needed are in (making charges, for offers calculated on them). */
+  amounts: SaleAmounts | null;
+  makingChargesRequired?: boolean;
+  pointValue?: number;
+  customer?: { id: string; name: string; mobile: string } | null;
+  otpRequired?: boolean;
 }
 
 export type LedgerType = "EARN" | "EARN_REVERSAL" | "PAYOUT" | "PAYOUT_REVERSAL" | "ADJUSTMENT";
@@ -438,7 +498,7 @@ export interface AuditEntry {
   actor: { name: string; email: string } | null;
 }
 
-export type ReportType = "sales" | "hsn" | "metals" | "campaigns" | "tds";
+export type ReportType = "partnerSales" | "sales" | "collections" | "hsn" | "metals" | "campaigns" | "tds";
 
 export interface Report {
   title: string;

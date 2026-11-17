@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { useMe } from "@/providers/auth";
 import { NavigationHistoryProvider } from "./back-button";
-import { canAccess, NAV } from "./nav";
+import { canAccess, navItemFor } from "./nav";
 
 /** Portal frame per the shadcn sidebar layout: SidebarProvider → AppSidebar + SidebarInset (with SidebarTrigger). */
 export function AppShell({ children }: { children: ReactNode }) {
@@ -36,6 +36,8 @@ export function AppShell({ children }: { children: ReactNode }) {
           <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
             {canAccess(me, pathname) ? (
               children
+            ) : navItemFor(pathname)?.off ? (
+              <Empty title="Not in use" description="Itemised billing is switched off. Partner sales are recorded under Partner sale." />
             ) : (
               <Empty title="Not available" description="Your role does not have access to this page." />
             )}
@@ -48,7 +50,7 @@ export function AppShell({ children }: { children: ReactNode }) {
 
 /** "Customers" on a list page; "Customers / Details" (section linked) on its sub-pages. */
 function Breadcrumb({ pathname }: { pathname: string }) {
-  const section = NAV.find((n) => pathname === n.href || pathname.startsWith(`${n.href}/`));
+  const section = navItemFor(pathname);
   if (!section) {
     return <span className="text-sm text-muted-foreground">{pathname.startsWith("/account") ? "Account" : null}</span>;
   }

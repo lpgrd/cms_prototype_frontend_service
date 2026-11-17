@@ -1,5 +1,8 @@
 import { expect, test } from "@playwright/test";
+import { FULL_BILLING } from "../src/lib/features";
 import { signIn, uniqueMobile } from "./helpers";
+
+test.skip(!FULL_BILLING, "Itemised billing is switched off in src/lib/features.ts");
 
 test("typing part of a number suggests customers and picking one fills in their details", async ({ page }) => {
   await signIn(page);
