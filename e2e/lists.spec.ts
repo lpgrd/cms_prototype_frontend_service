@@ -1,9 +1,10 @@
 import { expect, test } from "@playwright/test";
+import { FULL_BILLING } from "../src/lib/features";
 import { signIn, uniqueMobile } from "./helpers";
 
 test("list filters live in the URL, survive a reload and clear in one click", async ({ page }) => {
   await signIn(page);
-  await page.goto("/transactions");
+  await page.goto(FULL_BILLING ? "/transactions" : "/sales");
 
   await page.getByRole("combobox", { name: "Status" }).click();
   await page.getByRole("option", { name: "Cancelled" }).click();

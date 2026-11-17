@@ -9,13 +9,15 @@ import { useEffect, useMemo, useState } from "react";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { QrScannerModal } from "@/components/qr-scanner";
-import { Alert, Badge, Button, Card, Checkbox, Field, FormDatePicker, FormSelect, Input, MaskedInput, PageHeader, RequiredNote, Textarea } from "@/components/ui";
+import { Alert, Badge, Button, Card, Checkbox, Field, FormDatePicker, FormSelect, InlineLoading, Input, MaskedInput, PageHeader, RequiredNote, Textarea } from "@/components/ui";
 import { api, errorMessage } from "@/lib/api";
+import { codeFromScan } from "@/lib/partner-code";
 import { date, inr, inrShort, plural, points } from "@/lib/format";
 import type { BillPreview, Customer, MetalType, OtpChallenge, Transaction } from "@/lib/types";
+import { useDebounced } from "@/hooks/use-debounced";
 import { useCan } from "@/providers/auth";
 import { CustomerFormButton } from "../customers/customer-form";
-import { CustomerMobileInput } from "./customer-search";
+import { CustomerMobileInput } from "@/components/customer-mobile-input";
 import { paidSoFar, PaymentSection, type PaymentFormValues } from "./payment-section";
 
 interface ItemForm {
@@ -64,16 +66,6 @@ const digits = (v: string) => v.replace(/\D/g, "").slice(-10);
 const isMobile = (v: string) => /^[6-9]\d{9}$/.test(digits(v));
 const n = (v: number | undefined) => (Number.isFinite(v) ? (v as number) : 0);
 const upper = (v: string | undefined) => v?.trim().toUpperCase() || undefined;
-
-/** Debounces a value so the bill preview is not recomputed on every keystroke. */
-function useDebounced<T>(value: T, ms = 350) {
-  const [v, setV] = useState(value);
-  useEffect(() => {
-    const t = setTimeout(() => setV(value), ms);
-    return () => clearTimeout(t);
-  }, [value, ms]);
-  return v;
-}
 
 export default function BillingPage() {
   const router = useRouter();
@@ -340,7 +332,12 @@ export default function BillingPage() {
           {/* Partner code */}
           <Card title="Partner offer" icon={BadgePercent}>
             <div className="flex gap-2">
-              <Input placeholder="Scan QR or type code" className="font-mono" {...register("code")} />
+              <Input
+                  placeholder="Scan QR or type code"
+                  className="font-mono"
+                  // USB scanners type the whole QR link into the field; keep just the code.
+                  {...register("code", { onChange: (e) => setValue("code", codeFromScan(e.target.value)) })}
+                />
               <Button type="button" variant="secondary" icon={<ScanLine className="size-4" />} onClick={() => setScanOpen(true)}>
                 Scan
               </Button>
@@ -489,8 +486,8 @@ export default function BillingPage() {
 
         {/* Summary */}
         <div id="bill-summary" className="scroll-mt-16 xl:sticky xl:top-16 xl:self-start">
-          <Card title="Summary" icon={Calculator}>
-            <dl className="tabular space-y-2 text-sm">
+          <Card title="Summary" icon={Calculator} actions={preview.isFetching ? <InlineLoading>Updating…</InlineLoading> : undefined}>
+            <dl className={clsx("tabular space-y-2 text-sm transition-opacity", preview.isFetching && "opacity-50")} aria-busy={preview.isFetching}>
               <Row label="Subtotal" value={inr(totals?.subtotal)} />
               <Row label="Making charges" value={inr(totals?.makingChargesTotal)} muted />
               <Row
@@ -538,7 +535,7 @@ export default function BillingPage() {
         open={scanOpen}
         onClose={() => setScanOpen(false)}
         onScan={(text) => {
-          setValue("code", text, { shouldDirty: true });
+          setValue("code", codeFromScan(text), { shouldDirty: true });
           setScanOpen(false);
           toast.success("Code scanned");
         }}

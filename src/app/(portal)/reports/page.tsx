@@ -3,25 +3,29 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { CalendarRange, Download, FileBarChart } from "lucide-react";
 import { useState } from "react";
-import { Button, Card, DatePicker, Empty, ErrorState, PageHeader, SelectInput, Spinner, Table, Td, Th } from "@/components/ui";
+import { Button, Card, DatePicker, Empty, ErrorState, PageHeader, SelectInput, Table, TableSkeleton, Td, Th } from "@/components/ui";
 import { api } from "@/lib/api";
 import { number } from "@/lib/format";
+import { FULL_BILLING } from "@/lib/features";
 import type { Report, ReportType } from "@/lib/types";
 
-const REPORTS: { value: ReportType; label: string; description: string }[] = [
-  { value: "sales", label: "Sales register (GST)", description: "Invoice-wise taxable value, CGST/SGST, PAN and payment mode, for GSTR-1." },
-  { value: "hsn", label: "HSN summary", description: "Taxable value and tax by HSN code (discount apportioned to lines)." },
-  { value: "metals", label: "Sales by metal", description: "Pieces, net weight and value by metal and purity." },
-  { value: "campaigns", label: "Campaign performance", description: "Customers, revenue, discount and points per partner code." },
+/** `billing` reports cover itemised bills, and are listed only while full billing is on. */
+const ALL_REPORTS: { value: ReportType; label: string; description: string; billing?: true }[] = [
+  { value: "partnerSales", label: "Partner sales", description: "Sale-wise bill amount, discount, what the customer paid and the partner's points." },
+  { value: "sales", label: "Sales register (GST)", description: "Invoice-wise taxable value, CGST/SGST, PAN and payment mode, for GSTR-1.", billing: true },
+  { value: "hsn", label: "HSN summary", description: "Taxable value and tax by HSN code (discount apportioned to lines).", billing: true },
+  { value: "metals", label: "Sales by metal", description: "Pieces, net weight and value by metal and purity.", billing: true },
+  { value: "campaigns", label: "Campaign performance", description: "Customers, revenue, discount and points per partner code, across sales and bills." },
   { value: "tds", label: "TDS register", description: "Paid partner payouts with PAN and TDS deducted, for TDS returns." },
 ];
+const REPORTS = ALL_REPORTS.filter((r) => FULL_BILLING || !r.billing);
 
 const pad = (n: number) => String(n).padStart(2, "0");
 const ymd = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
 export default function ReportsPage() {
   const today = new Date();
-  const [type, setType] = useState<ReportType>("sales");
+  const [type, setType] = useState<ReportType>("partnerSales");
   const [from, setFrom] = useState(ymd(new Date(today.getFullYear(), today.getMonth(), 1)));
   const [to, setTo] = useState(ymd(today));
   const meta = REPORTS.find((r) => r.value === type)!;
@@ -52,7 +56,7 @@ export default function ReportsPage() {
         {!valid ? (
           <Empty icon={CalendarRange} title="Pick a date range" description="“From” must be on or before “To”." />
         ) : isLoading ? (
-          <Spinner />
+          <TableSkeleton />
         ) : error || !data ? (
           <div className="p-4">
             <ErrorState error={error} />

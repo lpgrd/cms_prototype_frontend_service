@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import { Spinner } from "@/components/ui";
+import { PageSkeleton } from "@/components/ui";
 import { InfluencerView } from "./partner-view";
 
 export default function InfluencerPage() {
   return (
-    <Suspense fallback={<Spinner />}>
+    <Suspense fallback={<PageSkeleton kind="detail" />}>
       <InfluencerView />
     </Suspense>
   );

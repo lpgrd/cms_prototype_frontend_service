@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { BackButton } from "../layout/back-button";
-import { NAV } from "../layout/nav";
+import { navItemFor } from "../layout/nav";
 import { Skeleton } from "./skeleton";
 import { Button as ShadcnButton } from "./button";
 import { Checkbox as ShadcnCheckbox } from "./checkbox";
@@ -171,7 +171,7 @@ export function PageHeader({
   icon?: LucideIcon;
 }) {
   const pathname = usePathname();
-  const section = NAV.find((n) => pathname === n.href || pathname.startsWith(`${n.href}/`));
+  const section = navItemFor(pathname);
   const Icon = icon ?? section?.icon;
   return (
     <div className={cn("mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between", className)}>
@@ -331,7 +331,8 @@ export function StatusBadge({ status }: { status: string }) {
 
 export function Table({ children }: { children: ReactNode }) {
   return (
-    <div className="overflow-x-auto">
+    // relative: visually hidden labels in cells are absolutely positioned and must stay inside the scroll box.
+    <div className="relative overflow-x-auto">
       <table className="w-full text-left text-sm [&_tbody_tr]:transition-colors [&_tbody_tr:hover]:bg-muted/40">{children}</table>
     </div>
   );
@@ -376,6 +377,87 @@ export function Spinner({ label = "Loading…", rows = 4 }: { label?: string; ro
         <Skeleton key={i} className="h-4 motion-reduce:animate-none" style={{ width: `${92 - ((i * 17) % 40)}%` }} />
       ))}
     </div>
+  );
+}
+
+/** Bars at a fixed set of widths, so placeholders look like text without shifting between renders. */
+const BAR_WIDTHS = ["72%", "56%", "84%", "64%", "48%", "78%"];
+const bar = "motion-reduce:animate-none";
+
+/** Placeholder for a table inside a card: a header row and `rows` rows of `columns` cells. */
+export function TableSkeleton({ rows = 6, columns = 5, label = "Loading…" }: { rows?: number; columns?: number; label?: string }) {
+  return (
+    <div role="status" aria-live="polite" className="relative">
+      <span className="sr-only">{label}</span>
+      <div className="flex gap-4 border-b border-border bg-muted/40 px-3 py-3 sm:px-4">
+        {Array.from({ length: columns }, (_, c) => (
+          <Skeleton key={c} className={cn("h-3 flex-1", bar, c >= 2 && "max-sm:hidden", c >= 4 && "max-md:hidden")} style={{ maxWidth: c === 0 ? "7rem" : "5rem" }} />
+        ))}
+      </div>
+      {Array.from({ length: rows }, (_, r) => (
+        <div key={r} className="flex items-center gap-4 border-b border-border px-3 py-4 last:border-b-0 sm:px-4">
+          {Array.from({ length: columns }, (_, c) => (
+            <div key={c} className={cn("flex-1 space-y-1.5", c >= 2 && "max-sm:hidden", c >= 4 && "max-md:hidden")}>
+              <Skeleton className={cn("h-3.5", bar)} style={{ width: BAR_WIDTHS[(r + c) % BAR_WIDTHS.length] }} />
+              {c === 0 && <Skeleton className={cn("h-3", bar)} style={{ width: "40%" }} />}
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/**
+ * Placeholder for a whole page while its data loads: the title block, optional stat tiles, and a card
+ * holding a table (lists) or a grid of fields (detail pages).
+ */
+export function PageSkeleton({ stats = 0, kind = "list", label = "Loading…" }: { stats?: number; kind?: "list" | "detail"; label?: string }) {
+  return (
+    <div role="status" aria-live="polite">
+      <span className="sr-only">{label}</span>
+      <div className="mb-6 flex items-center gap-4 sm:mb-8">
+        <Skeleton className={cn("size-12 rounded-xl max-sm:hidden", bar)} />
+        <div className="flex-1 space-y-2">
+          <Skeleton className={cn("h-7 w-48 sm:h-8", bar)} />
+          <Skeleton className={cn("h-4 w-72 max-w-full", bar)} />
+        </div>
+      </div>
+      {stats > 0 && (
+        <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+          {Array.from({ length: stats }, (_, i) => (
+            <div key={i} className="space-y-3 rounded-xl border border-border bg-card p-4 sm:p-5">
+              <Skeleton className={cn("h-3.5 w-24", bar)} />
+              <Skeleton className={cn("h-7 w-28", bar)} />
+            </div>
+          ))}
+        </div>
+      )}
+      <div className="overflow-hidden rounded-xl border border-border bg-card">
+        {kind === "list" ? (
+          <TableSkeleton label={label} />
+        ) : (
+          <div className="grid gap-x-6 gap-y-5 p-5 sm:grid-cols-2">
+            {Array.from({ length: 8 }, (_, i) => (
+              <div key={i} className="space-y-1.5">
+                <Skeleton className={cn("h-3 w-20", bar)} />
+                <Skeleton className={cn("h-4", bar)} style={{ width: BAR_WIDTHS[i % BAR_WIDTHS.length] }} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** A small spinning indicator with a few words, for work in progress inside a page ("Checking the code…"). */
+export function InlineLoading({ children, className }: { children: ReactNode; className?: string }) {
+  return (
+    <span role="status" className={cn("inline-flex items-center gap-1.5 text-xs text-muted-foreground", className)}>
+      <Loader2 className="size-3.5 animate-spin motion-reduce:animate-none" aria-hidden />
+      {children}
+    </span>
   );
 }
 

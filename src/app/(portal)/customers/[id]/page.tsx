@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import { Spinner } from "@/components/ui";
+import { PageSkeleton } from "@/components/ui";
 import { CustomerView } from "./customer-view";
 
 export default function CustomerPage() {
   return (
-    <Suspense fallback={<Spinner />}>
+    <Suspense fallback={<PageSkeleton kind="detail" />}>
       <CustomerView />
     </Suspense>
   );

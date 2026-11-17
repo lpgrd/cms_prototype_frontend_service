@@ -17,7 +17,7 @@ import {
   SidebarRail,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { canSee, NAV, NAV_GROUPS } from "@/components/layout/nav";
+import { canSee, NAV, NAV_GROUPS, navItemFor } from "@/components/layout/nav";
 import type { Me } from "@/lib/types";
 import { homeFor, roleLabel, useLogout } from "@/providers/auth";
 
@@ -56,7 +56,7 @@ export function AppSidebar({ user }: { user: Me }) {
                 {items.map(({ href, label, icon: Icon }) => (
                   <SidebarMenuItem key={href}>
                     <SidebarMenuButton
-                      isActive={pathname === href || pathname.startsWith(`${href}/`)}
+                      isActive={navItemFor(pathname)?.href === href}
                       tooltip={label}
                       render={<Link href={href} onClick={closeOnMobile} />}
                     >

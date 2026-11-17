@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Alert, Button, Card, ConfirmDialog, ErrorState, Field, HIDE_BELOW, PageHeader, Spinner, StatusBadge, Table, Td, Textarea, Th } from "@/components/ui";
+import { Alert, Button, Card, ConfirmDialog, ErrorState, Field, HIDE_BELOW, PageHeader, PageSkeleton, StatusBadge, Table, Td, Textarea, Th } from "@/components/ui";
 import { api, errorMessage } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { dateTime, grams, inr, mobile, paymentLabel, paymentLines, points } from "@/lib/format";
@@ -37,7 +37,7 @@ export function InvoiceView() {
     onError: (err) => toast.error(errorMessage(err)),
   });
 
-  if (isLoading) return <Spinner />;
+  if (isLoading) return <PageSkeleton kind="detail" />;
   if (error || !tx) {
     return (
       <>

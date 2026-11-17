@@ -3,7 +3,7 @@
 import { ScrollText } from "lucide-react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { DateRangeFilter, dateRangeParams, FilterBar, ListEmpty, ListPagination } from "@/components/list-controls";
-import { Badge, Card, ErrorState, HIDE_BELOW, PageHeader, SelectInput, Spinner, Table, Td, Th } from "@/components/ui";
+import { Badge, Card, ErrorState, HIDE_BELOW, PageHeader, SelectInput, Table, TableSkeleton, Td, Th } from "@/components/ui";
 import { useListState } from "@/hooks/use-list-state";
 import { cn } from "@/lib/utils";
 import { api } from "@/lib/api";
@@ -53,7 +53,7 @@ export default function AuditPage() {
           <DateRangeFilter from={f.from} to={f.to} onChange={(from, to) => list.setFilters({ from, to })} />
         </FilterBar>
         {isLoading ? (
-          <Spinner />
+          <TableSkeleton />
         ) : error || !data ? (
           <div className="p-4">
             <ErrorState error={error} />

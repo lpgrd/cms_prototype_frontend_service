@@ -8,7 +8,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { LedgerTable, PayoutsTable } from "@/components/points-tables";
 import { QrShareModal } from "@/components/qr-share-modal";
-import { Alert, Badge, Button, Card, DefinitionList, Empty, ErrorState, Field, HIDE_BELOW, Input, Modal, PageHeader, PasswordInput, RequiredNote, SecretValue, Spinner, Stat, StatusBadge, Table, Td, Th } from "@/components/ui";
+import { Alert, Badge, Button, Card, DefinitionList, Empty, ErrorState, Field, HIDE_BELOW, Input, Modal, PageHeader, PageSkeleton, PasswordInput, RequiredNote, SecretValue, Stat, StatusBadge, Table, Td, Th } from "@/components/ui";
 import { api, errorMessage } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { date, inr, inrShort, mobile, number, partnerTypeLabel } from "@/lib/format";
@@ -35,7 +35,7 @@ export function InfluencerView() {
     qc.invalidateQueries({ queryKey: ["payouts"] });
   };
 
-  if (isLoading) return <Spinner />;
+  if (isLoading) return <PageSkeleton stats={4} kind="detail" />;
   if (error || !data) {
     return (
       <>

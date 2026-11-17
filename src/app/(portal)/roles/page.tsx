@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Lock, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Alert, Badge, Button, Card, Checkbox, ConfirmDialog, ErrorState, Field, Input, Modal, PageHeader, Spinner, Textarea } from "@/components/ui";
+import { Alert, Badge, Button, Card, Checkbox, ConfirmDialog, ErrorState, Field, Input, Modal, PageHeader, PageSkeleton, Textarea } from "@/components/ui";
 import { api, errorMessage } from "@/lib/api";
 import type { Permission, PermissionGroup, Role } from "@/lib/types";
 import { useMe } from "@/providers/auth";
@@ -21,7 +21,7 @@ export default function RolesPage() {
   const roles = useQuery({ queryKey: ["roles"], queryFn: () => api.get<Role[]>("/roles") });
   const catalog = useQuery({ queryKey: ["permission-catalog"], queryFn: () => api.get<PermissionGroup[]>("/roles/permissions"), staleTime: Infinity });
 
-  if (roles.isLoading || catalog.isLoading) return <Spinner />;
+  if (roles.isLoading || catalog.isLoading) return <PageSkeleton />;
   if (roles.error || catalog.error || !roles.data || !catalog.data) return <ErrorState error={roles.error ?? catalog.error} />;
   const total = catalog.data.reduce((n, g) => n + g.permissions.length, 0);
   const labelOf = new Map(catalog.data.flatMap((g) => g.permissions.map((p) => [p.key, p.label] as const)));

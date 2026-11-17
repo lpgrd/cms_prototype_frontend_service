@@ -6,7 +6,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { LedgerTable, PayoutsTable } from "@/components/points-tables";
 import { QrShareModal } from "@/components/qr-share-modal";
-import { Alert, Button, Card, Empty, ErrorState, Field, Input, Modal, PageHeader, Spinner, Stat, StatusBadge } from "@/components/ui";
+import { Alert, Button, Card, Empty, ErrorState, Field, Input, Modal, PageHeader, PageSkeleton, Stat, StatusBadge, TableSkeleton } from "@/components/ui";
 import { api, errorMessage } from "@/lib/api";
 import { date, inr, inrShort, number, plural } from "@/lib/format";
 import type { InfluencerSelf, Paginated, Payout } from "@/lib/types";
@@ -20,7 +20,7 @@ export default function PartnerPage() {
   const { data, isLoading, error } = useQuery({ queryKey: ["me-influencer"], queryFn: () => api.get<InfluencerSelf>("/me/influencer") });
   const payouts = useQuery({ queryKey: ["me-payouts"], queryFn: () => api.get<Paginated<Payout>>("/me/influencer/payouts", { limit: 20 }) });
 
-  if (isLoading) return <Spinner />;
+  if (isLoading) return <PageSkeleton stats={3} kind="detail" />;
   if (error || !data) return <ErrorState error={error} />;
   const { influencer: me, campaigns, pointValue, minPayoutPoints } = data;
   const customers = campaigns.reduce((s, c) => s + c.stats.redemptions, 0);
@@ -78,7 +78,7 @@ export default function PartnerPage() {
           <LedgerTable endpoint="/me/influencer/ledger" />
         </Card>
         <Card title="Payouts" icon={Wallet} padded={false}>
-          {payouts.isLoading ? <Spinner /> : <PayoutsTable payouts={payouts.data?.items ?? []} />}
+          {payouts.isLoading ? <TableSkeleton /> : <PayoutsTable payouts={payouts.data?.items ?? []} />}
         </Card>
       </div>
 

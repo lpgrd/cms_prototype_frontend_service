@@ -1,7 +1,9 @@
 import { expect, test, type Page } from "@playwright/test";
+import { FULL_BILLING } from "../src/lib/features";
 import { signIn } from "./helpers";
 
-const PAGES = ["/dashboard", "/billing", "/transactions", "/customers", "/campaigns", "/partners", "/payouts", "/audit", "/settings", "/roles"];
+const BILLING = FULL_BILLING ? ["/billing", "/transactions"] : ["/sales/new", "/sales"];
+const PAGES = ["/dashboard", ...BILLING, "/customers", "/campaigns", "/partners", "/payouts", "/audit", "/settings", "/roles"];
 
 const horizontalOverflow = (page: Page) => page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
 
@@ -33,6 +35,7 @@ test("on a tablet the menu is a drawer that closes after choosing a page", async
 });
 
 test("on a phone the bill total stays in view and leads to the summary", async ({ page }) => {
+  test.skip(!FULL_BILLING, "Itemised billing is switched off in src/lib/features.ts");
   await page.setViewportSize({ width: 390, height: 800 });
   await signIn(page);
   await page.goto("/billing");

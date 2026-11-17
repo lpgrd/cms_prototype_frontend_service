@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import { DateRangeFilter, dateRangeParams, FilterBar, ListEmpty, ListPagination, SortableTh } from "@/components/list-controls";
-import { Alert, Button, Card, ErrorState, Field, HIDE_BELOW, Input, Modal, PageHeader, SecretValue, SelectInput, Spinner, StatusBadge, Table, Td, Th } from "@/components/ui";
+import { Alert, Button, Card, ErrorState, Field, HIDE_BELOW, Input, Modal, PageHeader, SecretValue, SelectInput, StatusBadge, Table, TableSkeleton, Td, Th } from "@/components/ui";
 import { useListState } from "@/hooks/use-list-state";
 import { api, errorMessage } from "@/lib/api";
 import { cn } from "@/lib/utils";
@@ -61,7 +61,7 @@ export default function PayoutsPage() {
           <DateRangeFilter from={f.from} to={f.to} onChange={(from, to) => list.setFilters({ from, to })} />
         </FilterBar>
         {isLoading ? (
-          <Spinner />
+          <TableSkeleton />
         ) : error ? (
           <div className="p-4"><ErrorState error={error} /></div>
         ) : !data?.items.length ? (

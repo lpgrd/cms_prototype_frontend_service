@@ -3,7 +3,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { Copy, Download } from "lucide-react";
 import { toast } from "sonner";
-import { Button, ErrorState, Modal, Spinner } from "@/components/ui";
+import { Button, ErrorState, Modal } from "@/components/ui";
+import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/lib/api";
 import type { QrResponse } from "@/lib/types";
 
@@ -38,7 +39,12 @@ export function QrShareModal({
   return (
     <Modal open={open} onClose={onClose} title={title}>
       {isLoading ? (
-        <Spinner />
+        <div role="status" className="space-y-4">
+          <span className="sr-only">Creating the QR code…</span>
+          <Skeleton className="mx-auto size-64 rounded-lg motion-reduce:animate-none" />
+          <Skeleton className="mx-auto h-7 w-40 motion-reduce:animate-none" />
+          <Skeleton className="mx-auto h-3 w-56 motion-reduce:animate-none" />
+        </div>
       ) : error || !data ? (
         <ErrorState error={error} />
       ) : (

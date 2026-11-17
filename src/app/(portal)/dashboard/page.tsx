@@ -6,7 +6,7 @@ import { CalendarDays, Coins, IndianRupee, LayoutDashboard, Sparkles, TrendingUp
 import { AnimatedNumber } from "@/components/animated-number";
 import { ColumnChart } from "@/components/charts/column-chart";
 import { useMe } from "@/providers/auth";
-import { Card, Empty, ErrorState, PageHeader, Spinner, Stat, Table, Td, Th } from "@/components/ui";
+import { Card, Empty, ErrorState, PageHeader, PageSkeleton, Stat, Table, Td, Th } from "@/components/ui";
 import { api } from "@/lib/api";
 import { inrShort, number, plural, points } from "@/lib/format";
 import type { DashboardSummary } from "@/lib/types";
@@ -35,7 +35,7 @@ export default function DashboardPage() {
     queryFn: () => api.get<DashboardSummary>("/dashboard/summary"),
   });
 
-  if (isLoading) return <Spinner />;
+  if (isLoading) return <PageSkeleton stats={4} kind="detail" />;
   if (error || !data) return <ErrorState error={error} />;
 
   const { sales, customers, points: owed, influencers } = data;
@@ -47,7 +47,7 @@ export default function DashboardPage() {
           key,
           label,
           value: m?.revenue ?? 0,
-          detail: m ? `${plural(m.bills, "bill")}, ${m.influencerBills} through partners` : "No bills",
+          detail: m ? `${plural(m.bills, "sale")}, ${m.influencerBills} through partners` : "No sales",
         };
       })
     : [];
@@ -72,13 +72,13 @@ export default function DashboardPage() {
               label="Sales today"
               icon={IndianRupee}
               value={<AnimatedNumber value={sales.today.revenue} format={inrShort} />}
-              sub={plural(sales.today.bills, "bill")}
+              sub={plural(sales.today.bills, "sale")}
             />
             <Stat
               label="Sales this month"
               icon={CalendarDays}
               value={<AnimatedNumber value={sales.month.revenue} format={inrShort} />}
-              sub={`${plural(sales.month.bills, "bill")}, ${inrShort(sales.month.discounts)} in discounts`}
+              sub={`${plural(sales.month.bills, "sale")}, ${inrShort(sales.month.discounts)} in discounts`}
             />
           </>
         )}
@@ -131,7 +131,7 @@ export default function DashboardPage() {
                   <thead>
                     <tr>
                       <Th>Partner</Th>
-                      <Th className="text-right">Bills</Th>
+                      <Th className="text-right">Sales</Th>
                       <Th className="text-right">Revenue</Th>
                     </tr>
                   </thead>
