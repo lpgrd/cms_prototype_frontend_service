@@ -47,12 +47,20 @@ export default function CampaignsPage() {
       />
       <Card padded={false}>
         <FilterBar list={list} placeholder="Campaign name">
-          <SelectInput className="sm:w-40" aria-label="Status" value={list.filters.status} onValueChange={(v) => list.setFilter("status", v)} options={STATUSES} />
+          <SelectInput
+            className="sm:w-40"
+            aria-label="Status"
+            value={list.filters.status}
+            onValueChange={(v) => list.setFilter("status", v)}
+            options={STATUSES}
+          />
         </FilterBar>
         {isLoading ? (
           <TableSkeleton />
         ) : error ? (
-          <div className="p-4"><ErrorState error={error} /></div>
+          <div className="p-4">
+            <ErrorState error={error} />
+          </div>
         ) : !data?.items.length ? (
           <ListEmpty
             list={list}
@@ -60,16 +68,26 @@ export default function CampaignsPage() {
             icon={Megaphone}
             title="No campaigns yet"
             description="Create a campaign, add partners and share their QR codes."
-            action={can("campaigns.manage") && <Link href="/campaigns/new"><Button>New campaign</Button></Link>}
+            action={
+              can("campaigns.manage") && (
+                <Link href="/campaigns/new">
+                  <Button>New campaign</Button>
+                </Link>
+              )
+            }
           />
         ) : (
           <div className={isFetching ? "opacity-60 transition-opacity" : "transition-opacity"} aria-busy={isFetching}>
             <Table>
               <thead>
                 <tr>
-                  <SortableTh column="name" sort={list.sort} onSort={list.toggleSort}>Campaign</SortableTh>
+                  <SortableTh column="name" sort={list.sort} onSort={list.toggleSort}>
+                    Campaign
+                  </SortableTh>
                   <Th className={HIDE_BELOW.lg}>Offer</Th>
-                  <SortableTh column="startsAt" sort={list.sort} onSort={list.toggleSort} firstDir="DESC" className={HIDE_BELOW.md}>Runs</SortableTh>
+                  <SortableTh column="startsAt" sort={list.sort} onSort={list.toggleSort} firstDir="DESC" className={HIDE_BELOW.md}>
+                    Runs
+                  </SortableTh>
                   <Th className={cn(HIDE_BELOW.xl, "text-right")}>Partners</Th>
                   <Th className="text-right">Redemptions</Th>
                   <Th className={HIDE_BELOW.sm}>Status</Th>
@@ -79,7 +97,9 @@ export default function CampaignsPage() {
                 {data.items.map((c) => (
                   <tr key={c.id}>
                     <Td>
-                      <Link href={`/campaigns/${c.id}`} className="font-medium hover:text-primary">{c.name}</Link>
+                      <Link href={`/campaigns/${c.id}`} className="font-medium hover:text-primary">
+                        {c.name}
+                      </Link>
                       <div className="mt-0.5 text-xs text-muted-foreground lg:hidden">{describeOffer(c)}</div>
                       <div className="mt-1 sm:hidden">
                         <StatusBadge status={c.effectiveStatus ?? c.status} />
@@ -90,11 +110,15 @@ export default function CampaignsPage() {
                       <div className="text-xs text-muted-foreground">{describeReward(c)}</div>
                     </Td>
                     <Td className={cn(HIDE_BELOW.md, "text-muted-foreground")}>
-                      {c.startsAt || c.endsAt ? `${c.startsAt ? date(c.startsAt) : "Now"} – ${c.endsAt ? date(c.endsAt) : "open"}` : "No time limit"}
+                      {c.startsAt || c.endsAt
+                        ? `${c.startsAt ? date(c.startsAt) : "Now"} – ${c.endsAt ? date(c.endsAt) : "open"}`
+                        : "No time limit"}
                     </Td>
                     <Td className={cn(HIDE_BELOW.xl, "tabular text-right")}>{c.influencerCount}</Td>
                     <Td className="tabular text-right">{c.redemptionCount}</Td>
-                    <Td className={HIDE_BELOW.sm}><StatusBadge status={c.effectiveStatus ?? c.status} /></Td>
+                    <Td className={HIDE_BELOW.sm}>
+                      <StatusBadge status={c.effectiveStatus ?? c.status} />
+                    </Td>
                   </tr>
                 ))}
               </tbody>

@@ -67,7 +67,11 @@ export function ThermalReceipt() {
         <Rule />
         <Line label="TOTAL" value={inr(t.grandTotal)} bold />
         {paymentLines(t).map((p, i) => (
-          <Line key={i} label={`${i === 0 ? "Paid: " : ""}${paymentLabel(p.method)}${p.reference ? ` ${p.reference}` : ""}`} value={inr(p.amount)} />
+          <Line
+            key={i}
+            label={`${i === 0 ? "Paid: " : ""}${paymentLabel(p.method)}${p.reference ? ` ${p.reference}` : ""}`}
+            value={inr(p.amount)}
+          />
         ))}
         <Rule />
         <div className="text-center">Thank you! Visit again.</div>

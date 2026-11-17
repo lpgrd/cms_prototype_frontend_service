@@ -11,11 +11,24 @@ import type { Report, ReportType } from "@/lib/types";
 
 /** `billing` reports cover itemised bills, and are listed only while full billing is on. */
 const ALL_REPORTS: { value: ReportType; label: string; description: string; billing?: true }[] = [
-  { value: "partnerSales", label: "Partner sales", description: "Sale-wise bill amount, discount, what the customer paid and the partner's points." },
-  { value: "sales", label: "Sales register (GST)", description: "Invoice-wise taxable value, CGST/SGST, PAN and payment mode, for GSTR-1.", billing: true },
+  {
+    value: "partnerSales",
+    label: "Partner sales",
+    description: "Sale-wise bill amount, discount, what the customer paid and the partner's points.",
+  },
+  {
+    value: "sales",
+    label: "Sales register (GST)",
+    description: "Invoice-wise taxable value, CGST/SGST, PAN and payment mode, for GSTR-1.",
+    billing: true,
+  },
   { value: "hsn", label: "HSN summary", description: "Taxable value and tax by HSN code (discount apportioned to lines).", billing: true },
   { value: "metals", label: "Sales by metal", description: "Pieces, net weight and value by metal and purity.", billing: true },
-  { value: "campaigns", label: "Campaign performance", description: "Customers, revenue, discount and points per partner code, across sales and bills." },
+  {
+    value: "campaigns",
+    label: "Campaign performance",
+    description: "Customers, revenue, discount and points per partner code, across sales and bills.",
+  },
   { value: "tds", label: "TDS register", description: "Paid partner payouts with PAN and TDS deducted, for TDS returns." },
 ];
 const REPORTS = ALL_REPORTS.filter((r) => FULL_BILLING || !r.billing);
@@ -48,7 +61,12 @@ export default function ReportsPage() {
           <SelectInput value={type} onValueChange={(v) => setType(v as ReportType)} options={REPORTS} />
           <DatePicker value={from} onChange={setFrom} placeholder="From" fromYear={2020} />
           <DatePicker value={to} onChange={setTo} placeholder="To" fromYear={2020} />
-          <Button variant="secondary" icon={<Download className="size-4" />} disabled={!valid} onClick={() => window.open(csvHref, "_blank")}>
+          <Button
+            variant="secondary"
+            icon={<Download className="size-4" />}
+            disabled={!valid}
+            onClick={() => window.open(csvHref, "_blank")}
+          >
             CSV
           </Button>
         </div>

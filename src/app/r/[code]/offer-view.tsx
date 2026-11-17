@@ -49,13 +49,13 @@ export function OfferView() {
               {data.influencerName}
               {data.instagramHandle && <span> (@{data.instagramHandle})</span>} invites you to {store}
             </p>
-            <h1 className="mt-3 text-balance font-heading text-4xl font-semibold leading-tight text-primary sm:text-5xl">{data.offer}</h1>
+            <h1 className="mt-3 font-heading text-4xl leading-tight font-semibold text-balance text-primary sm:text-5xl">{data.offer}</h1>
             <p className="mt-3 font-medium">{data.campaignName}</p>
             {data.description && <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{data.description}</p>}
           </div>
 
           {/* The code as a coupon: dashed edge with punched notches, the jeweller's counter slip. */}
-          <div className="relative mt-10 rounded-2xl border-2 border-dashed border-primary/40 bg-card px-6 py-7 text-center text-card-foreground motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-3 motion-safe:delay-300 motion-safe:duration-500 motion-safe:fill-mode-both">
+          <div className="relative mt-10 rounded-2xl border-2 border-dashed border-primary/40 bg-card px-6 py-7 text-center text-card-foreground motion-safe:animate-in motion-safe:delay-300 motion-safe:duration-500 motion-safe:fade-in-0 motion-safe:fill-mode-both motion-safe:slide-in-from-bottom-3">
             {/* Punched notches: page-coloured circles that cut into the coupon's edge. */}
             <span aria-hidden className="absolute top-1/2 -left-[13px] size-6 -translate-y-1/2 rounded-full bg-background" />
             <span aria-hidden className="absolute top-1/2 -right-[13px] size-6 -translate-y-1/2 rounded-full bg-background" />
@@ -72,25 +72,37 @@ export function OfferView() {
                   <Clock3 className="size-4" aria-hidden /> This offer isn&apos;t running right now
                 </p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {data.startsAt && new Date(data.startsAt) > new Date() ? `It starts on ${date(data.startsAt)}.` : "Ask at the store for current offers."}
+                  {data.startsAt && new Date(data.startsAt) > new Date()
+                    ? `It starts on ${date(data.startsAt)}.`
+                    : "Ask at the store for current offers."}
                 </p>
               </>
             )}
           </div>
-          <p className="mt-3 text-center text-xs text-muted-foreground">One use per mobile number for this campaign. The store verifies it with an OTP.</p>
+          <p className="mt-3 text-center text-xs text-muted-foreground">
+            One use per mobile number for this campaign. The store verifies it with an OTP.
+          </p>
 
           {(data.store.address || data.store.phone) && (
             <div className="mt-10 space-y-2 rounded-xl bg-muted/50 p-4 text-sm text-muted-foreground">
               <p className="font-medium text-foreground">{store}</p>
               {data.store.address && (
-                <p className="flex gap-2"><MapPin className="mt-0.5 size-4 shrink-0" aria-hidden /> <span className="whitespace-pre-line">{data.store.address}</span></p>
+                <p className="flex gap-2">
+                  <MapPin className="mt-0.5 size-4 shrink-0" aria-hidden />{" "}
+                  <span className="whitespace-pre-line">{data.store.address}</span>
+                </p>
               )}
               {data.store.phone && (
-                <p className="flex gap-2"><Phone className="mt-0.5 size-4 shrink-0" aria-hidden /> <a href={`tel:${data.store.phone}`} className="underline-offset-4 hover:underline">{data.store.phone}</a></p>
+                <p className="flex gap-2">
+                  <Phone className="mt-0.5 size-4 shrink-0" aria-hidden />{" "}
+                  <a href={`tel:${data.store.phone}`} className="underline-offset-4 hover:underline">
+                    {data.store.phone}
+                  </a>
+                </p>
               )}
             </div>
           )}
-          {data.terms && <p className="mt-auto whitespace-pre-line pt-10 text-xs leading-relaxed text-muted-foreground">{data.terms}</p>}
+          {data.terms && <p className="mt-auto pt-10 text-xs leading-relaxed whitespace-pre-line text-muted-foreground">{data.terms}</p>}
         </>
       )}
     </div>

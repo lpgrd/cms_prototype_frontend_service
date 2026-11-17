@@ -53,7 +53,7 @@ export function QrShareModal({
           <img src={data.pngDataUrl} alt={`QR code ${data.code}`} className="mx-auto size-64 rounded-lg border border-border" />
           <div>
             <div className="font-mono text-2xl font-semibold tracking-[0.2em]">{data.code}</div>
-            <div className="mt-1 break-all text-xs text-muted-foreground">{data.url}</div>
+            <div className="mt-1 text-xs break-all text-muted-foreground">{data.url}</div>
           </div>
           <div className="flex flex-wrap justify-center gap-2">
             <Button variant="secondary" size="sm" icon={<Download className="size-4" />} onClick={() => download(data.pngDataUrl, "png")}>

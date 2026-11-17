@@ -96,13 +96,19 @@ export function Field({
         {label}
         {required && (
           <>
-            <span aria-hidden className="ml-0.5 text-destructive">*</span>
+            <span aria-hidden className="ml-0.5 text-destructive">
+              *
+            </span>
             <span className="sr-only"> (required)</span>
           </>
         )}
       </span>
       {children}
-      {error ? <span className="block text-xs text-destructive">{error}</span> : hint ? <span className="block text-xs text-muted-foreground">{hint}</span> : null}
+      {error ? (
+        <span className="block text-xs text-destructive">{error}</span>
+      ) : hint ? (
+        <span className="block text-xs text-muted-foreground">{hint}</span>
+      ) : null}
     </label>
   );
 }
@@ -391,7 +397,11 @@ export function TableSkeleton({ rows = 6, columns = 5, label = "Loading…" }: {
       <span className="sr-only">{label}</span>
       <div className="flex gap-4 border-b border-border bg-muted/40 px-3 py-3 sm:px-4">
         {Array.from({ length: columns }, (_, c) => (
-          <Skeleton key={c} className={cn("h-3 flex-1", bar, c >= 2 && "max-sm:hidden", c >= 4 && "max-md:hidden")} style={{ maxWidth: c === 0 ? "7rem" : "5rem" }} />
+          <Skeleton
+            key={c}
+            className={cn("h-3 flex-1", bar, c >= 2 && "max-sm:hidden", c >= 4 && "max-md:hidden")}
+            style={{ maxWidth: c === 0 ? "7rem" : "5rem" }}
+          />
         ))}
       </div>
       {Array.from({ length: rows }, (_, r) => (
@@ -412,7 +422,15 @@ export function TableSkeleton({ rows = 6, columns = 5, label = "Loading…" }: {
  * Placeholder for a whole page while its data loads: the title block, optional stat tiles, and a card
  * holding a table (lists) or a grid of fields (detail pages).
  */
-export function PageSkeleton({ stats = 0, kind = "list", label = "Loading…" }: { stats?: number; kind?: "list" | "detail"; label?: string }) {
+export function PageSkeleton({
+  stats = 0,
+  kind = "list",
+  label = "Loading…",
+}: {
+  stats?: number;
+  kind?: "list" | "detail";
+  label?: string;
+}) {
   return (
     <div role="status" aria-live="polite">
       <span className="sr-only">{label}</span>
@@ -486,7 +504,10 @@ export function Empty({
 
 export function ErrorState({ error }: { error: unknown }) {
   return (
-    <div role="alert" className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/10 px-5 py-4 text-sm text-destructive">
+    <div
+      role="alert"
+      className="flex items-start gap-3 rounded-xl border border-destructive/30 bg-destructive/10 px-5 py-4 text-sm text-destructive"
+    >
       <AlertTriangle className="mt-0.5 size-4 shrink-0" aria-hidden />
       <span>{error instanceof Error ? error.message : "Something went wrong. Reload the page to try again."}</span>
     </div>
@@ -526,26 +547,35 @@ export function Modal({
   // that form — otherwise pressing Enter in the dialog would submit the page's form.
   return createPortal(
     // Phones: an edge-to-edge bottom sheet. Larger screens: a centred dialog. Header and footer stay put while the body scrolls.
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-foreground/30 backdrop-blur-[2px] motion-safe:animate-in motion-safe:fade-in-0 motion-safe:duration-150 sm:items-center sm:p-4" onMouseDown={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-foreground/30 backdrop-blur-[2px] motion-safe:animate-in motion-safe:duration-150 motion-safe:fade-in-0 sm:items-center sm:p-4"
+      onMouseDown={onClose}
+    >
       <div
         role="dialog"
         aria-modal="true"
         aria-label={title}
         className={cn(
-          "flex max-h-[92dvh] w-full flex-col rounded-t-xl border border-border bg-popover text-popover-foreground shadow-xl motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-4 motion-safe:duration-200 sm:max-h-[90dvh] sm:rounded-xl sm:motion-safe:zoom-in-95 sm:motion-safe:slide-in-from-bottom-2",
+          "flex max-h-[92dvh] w-full flex-col rounded-t-xl border border-border bg-popover text-popover-foreground shadow-xl motion-safe:animate-in motion-safe:duration-200 motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-4 sm:max-h-[90dvh] sm:rounded-xl sm:motion-safe:zoom-in-95 sm:motion-safe:slide-in-from-bottom-2",
           wide ? "sm:max-w-2xl" : "sm:max-w-md",
         )}
         onMouseDown={(e) => e.stopPropagation()}
       >
         <header className="flex shrink-0 items-center justify-between gap-3 border-b border-border px-4 py-4 sm:px-5">
           <h2 className="font-heading text-lg font-semibold sm:text-xl">{title}</h2>
-          <button onClick={onClose} className="rounded-md p-1 text-muted-foreground hover:bg-accent hover:text-foreground" aria-label="Close">
+          <button
+            onClick={onClose}
+            className="rounded-md p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
+            aria-label="Close"
+          >
             <X className="size-4" />
           </button>
         </header>
         <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-4 sm:p-5">{children}</div>
         {footer && (
-          <footer className="flex shrink-0 flex-wrap justify-end gap-2 border-t border-border px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-5">{footer}</footer>
+          <footer className="flex shrink-0 flex-wrap justify-end gap-2 border-t border-border px-4 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:px-5">
+            {footer}
+          </footer>
         )}
       </div>
     </div>,
@@ -588,7 +618,9 @@ export function ConfirmDialog({
       title={title}
       footer={
         <>
-          <Button variant="secondary" onClick={onClose}>Keep it</Button>
+          <Button variant="secondary" onClick={onClose}>
+            Keep it
+          </Button>
           <Button variant="destructive" icon={icon} loading={loading} disabled={disabled} onClick={onConfirm}>
             {confirmLabel}
           </Button>

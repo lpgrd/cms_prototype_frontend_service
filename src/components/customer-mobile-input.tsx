@@ -145,7 +145,10 @@ export function CustomerMobileInput({
                 pick(c);
               }}
               onMouseEnter={() => setActive(i)}
-              className={cn("flex cursor-pointer items-start gap-3 rounded-md px-2.5 py-2 text-sm", i === active && "bg-accent text-accent-foreground")}
+              className={cn(
+                "flex cursor-pointer items-start gap-3 rounded-md px-2.5 py-2 text-sm",
+                i === active && "bg-accent text-accent-foreground",
+              )}
             >
               <UserRound className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
               <div className="min-w-0 flex-1">
@@ -165,7 +168,10 @@ export function CustomerMobileInput({
                   </div>
                 )}
                 <div className="mt-0.5 text-xs text-muted-foreground">
-                  {[c.city, c.purchaseCount ? `${plural(c.purchaseCount, "purchase")}, last on ${date(c.lastPurchaseAt)}` : "No purchases yet"]
+                  {[
+                    c.city,
+                    c.purchaseCount ? `${plural(c.purchaseCount, "purchase")}, last on ${date(c.lastPurchaseAt)}` : "No purchases yet",
+                  ]
                     .filter(Boolean)
                     .join(", ")}
                 </div>

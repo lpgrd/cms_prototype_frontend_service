@@ -3,7 +3,9 @@ import type { NextConfig } from "next";
 // Where /api/* is proxied to, read at build time. On Vercel this is the Render URL of the API.
 const API_URL = (process.env.API_URL ?? "http://localhost:4000").replace(/\/$/, "");
 if (process.env.VERCEL && !process.env.API_URL) {
-  throw new Error("Set API_URL (the backend's public URL, e.g. https://jeweller-api.onrender.com) in the Vercel project's environment variables.");
+  throw new Error(
+    "Set API_URL (the backend's public URL, e.g. https://jeweller-api.onrender.com) in the Vercel project's environment variables.",
+  );
 }
 
 const nextConfig: NextConfig = {

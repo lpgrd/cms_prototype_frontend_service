@@ -56,7 +56,11 @@ export function QrScannerModal({ open, onClose, onScan }: { open: boolean; onClo
           <div role="status" className="absolute inset-0 flex flex-col items-center justify-center gap-3 text-sm text-muted-foreground">
             <span className="relative grid size-12 place-items-center rounded-full bg-background">
               <Camera className="size-5" aria-hidden />
-              <Loader2 className="absolute inset-0 size-12 animate-spin text-primary motion-reduce:animate-none" strokeWidth={1.25} aria-hidden />
+              <Loader2
+                className="absolute inset-0 size-12 animate-spin text-primary motion-reduce:animate-none"
+                strokeWidth={1.25}
+                aria-hidden
+              />
             </span>
             Starting the camera…
             <span className="text-xs">Allow camera access if your browser asks.</span>

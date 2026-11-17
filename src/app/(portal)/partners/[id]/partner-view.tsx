@@ -1,14 +1,48 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Coins, History, Hourglass, KeyRound, Landmark, Megaphone, QrCode, SlidersHorizontal, TrendingUp, Users, Wallet } from "lucide-react";
+import {
+  Coins,
+  History,
+  Hourglass,
+  KeyRound,
+  Landmark,
+  Megaphone,
+  QrCode,
+  SlidersHorizontal,
+  TrendingUp,
+  Users,
+  Wallet,
+} from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { LedgerTable, PayoutsTable } from "@/components/points-tables";
 import { QrShareModal } from "@/components/qr-share-modal";
-import { Alert, Badge, Button, Card, DefinitionList, Empty, ErrorState, Field, HIDE_BELOW, Input, Modal, PageHeader, PageSkeleton, PasswordInput, RequiredNote, SecretValue, Stat, StatusBadge, Table, Td, Th } from "@/components/ui";
+import {
+  Alert,
+  Badge,
+  Button,
+  Card,
+  DefinitionList,
+  Empty,
+  ErrorState,
+  Field,
+  HIDE_BELOW,
+  Input,
+  Modal,
+  PageHeader,
+  PageSkeleton,
+  PasswordInput,
+  RequiredNote,
+  SecretValue,
+  Stat,
+  StatusBadge,
+  Table,
+  Td,
+  Th,
+} from "@/components/ui";
 import { api, errorMessage } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { date, inr, inrShort, mobile, number, partnerTypeLabel } from "@/lib/format";
@@ -59,17 +93,26 @@ export function InfluencerView() {
             {inf.name} <Badge>{partnerTypeLabel(inf.type)}</Badge> <StatusBadge status={inf.status} />
           </span>
         }
-        description={[inf.contactPerson && `Contact: ${inf.contactPerson}`, mobile(inf.mobile), inf.instagramHandle && `@${inf.instagramHandle}`, inf.followerCount && `${number(inf.followerCount)} followers`]
+        description={[
+          inf.contactPerson && `Contact: ${inf.contactPerson}`,
+          mobile(inf.mobile),
+          inf.instagramHandle && `@${inf.instagramHandle}`,
+          inf.followerCount && `${number(inf.followerCount)} followers`,
+        ]
           .filter(Boolean)
           .join(", ")}
         actions={
           <>
             {can("influencers.manage") && <PartnerFormButton influencer={inf} />}
             {can("points.adjust") && (
-              <Button variant="secondary" icon={<SlidersHorizontal className="size-4" />} onClick={() => setDialog("adjust")}>Adjust points</Button>
+              <Button variant="secondary" icon={<SlidersHorizontal className="size-4" />} onClick={() => setDialog("adjust")}>
+                Adjust points
+              </Button>
             )}
             {can("payouts.manage") && (
-              <Button icon={<Wallet className="size-4" />} disabled={inf.pointsBalance <= 0} onClick={() => setDialog("payout")}>Pay out</Button>
+              <Button icon={<Wallet className="size-4" />} disabled={inf.pointsBalance <= 0} onClick={() => setDialog("payout")}>
+                Pay out
+              </Button>
             )}
           </>
         }
@@ -78,7 +121,12 @@ export function InfluencerView() {
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <Stat icon={Coins} label="Points balance" value={number(inf.pointsBalance)} sub={`Worth ${inr(data.pointsValue)}`} accent />
         <Stat icon={Hourglass} label="On hold" value={number(inf.pendingPoints)} sub="Payable after the return window" />
-        <Stat icon={Users} label="Customers brought" value={totals.customers} sub={`${number(inf.lifetimePointsEarned)} points earned in total`} />
+        <Stat
+          icon={Users}
+          label="Customers brought"
+          value={totals.customers}
+          sub={`${number(inf.lifetimePointsEarned)} points earned in total`}
+        />
         <Stat icon={TrendingUp} label="Revenue driven" value={inrShort(totals.revenue)} />
       </div>
       {!inf.panNumber && inf.pointsBalance > 0 && (
@@ -88,7 +136,10 @@ export function InfluencerView() {
       )}
       {inf.pointsBalance < 0 && (
         <div className="mt-4">
-          <Alert tone="warning">Negative balance: points were reversed for a cancelled bill after they had been paid out. It will be recovered from future earnings.</Alert>
+          <Alert tone="warning">
+            Negative balance: points were reversed for a cancelled bill after they had been paid out. It will be recovered from future
+            earnings.
+          </Alert>
         </div>
       )}
 
@@ -112,7 +163,9 @@ export function InfluencerView() {
                   {campaigns.map((c) => (
                     <tr key={c.id}>
                       <Td>
-                        <Link href={`/campaigns/${c.campaignId}`} className="font-medium hover:text-primary">{c.campaign.name}</Link>
+                        <Link href={`/campaigns/${c.campaignId}`} className="font-medium hover:text-primary">
+                          {c.campaign.name}
+                        </Link>
                         <div className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
                           <StatusBadge status={c.campaign.effectiveStatus ?? c.campaign.status} />
                           {!c.isActive && <Badge tone="danger">Code disabled</Badge>}
@@ -124,7 +177,9 @@ export function InfluencerView() {
                       <Td className="tabular text-right">{c.stats.redemptions}</Td>
                       <Td className="tabular text-right">{number(c.stats.pointsAwarded)}</Td>
                       <Td className="text-right">
-                        <Button size="sm" variant="ghost" icon={<QrCode className="size-4" />} onClick={() => setQrFor(c)}>QR</Button>
+                        <Button size="sm" variant="ghost" icon={<QrCode className="size-4" />} onClick={() => setQrFor(c)}>
+                          QR
+                        </Button>
                       </Td>
                     </tr>
                   ))}
@@ -143,7 +198,18 @@ export function InfluencerView() {
         </div>
 
         <div className="space-y-6">
-          <Card title="Partner login" icon={KeyRound} actions={!login && can("influencers.manage") && <Button size="sm" variant="secondary" icon={<KeyRound className="size-4" />} onClick={() => setDialog("login")}>Create</Button>}>
+          <Card
+            title="Partner login"
+            icon={KeyRound}
+            actions={
+              !login &&
+              can("influencers.manage") && (
+                <Button size="sm" variant="secondary" icon={<KeyRound className="size-4" />} onClick={() => setDialog("login")}>
+                  Create
+                </Button>
+              )
+            }
+          >
             {login ? (
               <DefinitionList
                 items={[
@@ -153,7 +219,9 @@ export function InfluencerView() {
                 ]}
               />
             ) : (
-              <p className="text-sm text-muted-foreground">No login yet. Create one so they can see their QR codes, points and request payouts.</p>
+              <p className="text-sm text-muted-foreground">
+                No login yet. Create one so they can see their QR codes, points and request payouts.
+              </p>
             )}
           </Card>
           <Card title="Payout details" icon={Landmark}>
@@ -167,7 +235,7 @@ export function InfluencerView() {
                 ["Email", inf.email],
               ]}
             />
-            {inf.notes && <p className="mt-4 whitespace-pre-line border-t border-border pt-4 text-sm text-muted-foreground">{inf.notes}</p>}
+            {inf.notes && <p className="mt-4 border-t border-border pt-4 text-sm whitespace-pre-line text-muted-foreground">{inf.notes}</p>}
           </Card>
         </div>
       </div>
@@ -181,14 +249,38 @@ export function InfluencerView() {
           fileName={`${qrFor.campaign.name}-${inf.name}-${qrFor.code}`.replace(/\s+/g, "-")}
         />
       )}
-      <LoginDialog open={dialog === "login"} onClose={() => setDialog(null)} influencerId={id} defaultEmail={inf.email ?? ""} onDone={refresh} />
+      <LoginDialog
+        open={dialog === "login"}
+        onClose={() => setDialog(null)}
+        influencerId={id}
+        defaultEmail={inf.email ?? ""}
+        onDone={refresh}
+      />
       <AdjustDialog open={dialog === "adjust"} onClose={() => setDialog(null)} influencerId={id} onDone={refresh} />
-      <PayoutDialog open={dialog === "payout"} onClose={() => setDialog(null)} influencerId={id} balance={inf.pointsBalance} onDone={refresh} />
+      <PayoutDialog
+        open={dialog === "payout"}
+        onClose={() => setDialog(null)}
+        influencerId={id}
+        balance={inf.pointsBalance}
+        onDone={refresh}
+      />
     </>
   );
 }
 
-function LoginDialog({ open, onClose, influencerId, defaultEmail, onDone }: { open: boolean; onClose: () => void; influencerId: string; defaultEmail: string; onDone: () => void }) {
+function LoginDialog({
+  open,
+  onClose,
+  influencerId,
+  defaultEmail,
+  onDone,
+}: {
+  open: boolean;
+  onClose: () => void;
+  influencerId: string;
+  defaultEmail: string;
+  onDone: () => void;
+}) {
   const [email, setEmail] = useState(defaultEmail);
   const [password, setPassword] = useState("");
   const create = useMutation({
@@ -202,16 +294,31 @@ function LoginDialog({ open, onClose, influencerId, defaultEmail, onDone }: { op
       title="Create partner login"
       footer={
         <>
-          <Button variant="secondary" onClick={onClose}>Cancel</Button>
-          <Button loading={create.isPending} disabled={!email || password.length < 8} onClick={() => create.mutate()}>Create login</Button>
+          <Button variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button loading={create.isPending} disabled={!email || password.length < 8} onClick={() => create.mutate()}>
+            Create login
+          </Button>
         </>
       }
     >
       <div className="space-y-4">
         {create.isError && <Alert tone="danger">{errorMessage(create.error)}</Alert>}
-        <Field label="Email" required><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></Field>
-        <Field label="Temporary password" required hint="At least 8 characters. Share it with them privately; they can change it after signing in.">
-          <PasswordInput autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} onGenerate={setPassword} />
+        <Field label="Email" required>
+          <Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </Field>
+        <Field
+          label="Temporary password"
+          required
+          hint="At least 8 characters. Share it with them privately; they can change it after signing in."
+        >
+          <PasswordInput
+            autoComplete="new-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onGenerate={setPassword}
+          />
         </Field>
         <RequiredNote />
       </div>
@@ -219,7 +326,17 @@ function LoginDialog({ open, onClose, influencerId, defaultEmail, onDone }: { op
   );
 }
 
-function AdjustDialog({ open, onClose, influencerId, onDone }: { open: boolean; onClose: () => void; influencerId: string; onDone: () => void }) {
+function AdjustDialog({
+  open,
+  onClose,
+  influencerId,
+  onDone,
+}: {
+  open: boolean;
+  onClose: () => void;
+  influencerId: string;
+  onDone: () => void;
+}) {
   const [pts, setPts] = useState("");
   const [note, setNote] = useState("");
   const adjust = useMutation({
@@ -233,21 +350,41 @@ function AdjustDialog({ open, onClose, influencerId, onDone }: { open: boolean; 
       title="Adjust points"
       footer={
         <>
-          <Button variant="secondary" onClick={onClose}>Cancel</Button>
-          <Button loading={adjust.isPending} disabled={!Number(pts) || note.trim().length < 3} onClick={() => adjust.mutate()}>Save</Button>
+          <Button variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button loading={adjust.isPending} disabled={!Number(pts) || note.trim().length < 3} onClick={() => adjust.mutate()}>
+            Save
+          </Button>
         </>
       }
     >
       <div className="space-y-4">
         {adjust.isError && <Alert tone="danger">{errorMessage(adjust.error)}</Alert>}
-        <Field label="Points" required hint="Positive to add (e.g. a bonus), negative to deduct."><Input type="number" step="0.01" value={pts} onChange={(e) => setPts(e.target.value)} /></Field>
-        <Field label="Reason" required hint="Recorded in the points history."><Input value={note} onChange={(e) => setNote(e.target.value)} /></Field>
+        <Field label="Points" required hint="Positive to add (e.g. a bonus), negative to deduct.">
+          <Input type="number" step="0.01" value={pts} onChange={(e) => setPts(e.target.value)} />
+        </Field>
+        <Field label="Reason" required hint="Recorded in the points history.">
+          <Input value={note} onChange={(e) => setNote(e.target.value)} />
+        </Field>
       </div>
     </Modal>
   );
 }
 
-function PayoutDialog({ open, onClose, influencerId, balance, onDone }: { open: boolean; onClose: () => void; influencerId: string; balance: number; onDone: () => void }) {
+function PayoutDialog({
+  open,
+  onClose,
+  influencerId,
+  balance,
+  onDone,
+}: {
+  open: boolean;
+  onClose: () => void;
+  influencerId: string;
+  balance: number;
+  onDone: () => void;
+}) {
   const [pts, setPts] = useState("");
   const create = useMutation({
     mutationFn: () => api.post(`/payouts`, { influencerId, points: Number(pts) }),
@@ -260,8 +397,12 @@ function PayoutDialog({ open, onClose, influencerId, balance, onDone }: { open: 
       title="Create payout"
       footer={
         <>
-          <Button variant="secondary" onClick={onClose}>Cancel</Button>
-          <Button loading={create.isPending} disabled={!(Number(pts) > 0)} onClick={() => create.mutate()}>Create payout</Button>
+          <Button variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button loading={create.isPending} disabled={!(Number(pts) > 0)} onClick={() => create.mutate()}>
+            Create payout
+          </Button>
         </>
       }
     >
@@ -270,7 +411,9 @@ function PayoutDialog({ open, onClose, influencerId, balance, onDone }: { open: 
         <Field label="Points to pay out" required hint={`Available: ${number(balance)} points`}>
           <Input type="number" min="0" step="0.01" value={pts} onChange={(e) => setPts(e.target.value)} />
         </Field>
-        <Button type="button" variant="ghost" size="sm" onClick={() => setPts(String(balance))}>Use full balance</Button>
+        <Button type="button" variant="ghost" size="sm" onClick={() => setPts(String(balance))}>
+          Use full balance
+        </Button>
       </div>
     </Modal>
   );

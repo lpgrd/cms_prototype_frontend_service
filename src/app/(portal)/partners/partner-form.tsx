@@ -77,9 +77,7 @@ export function PartnerFormButton({ influencer }: { influencer?: Influencer }) {
         notes: orNull(f.notes),
         ...(influencer ? { status: f.status } : {}),
       };
-      return influencer
-        ? api.patch<Influencer>(`/influencers/${influencer.id}`, body)
-        : api.post<Influencer>("/influencers", body);
+      return influencer ? api.patch<Influencer>(`/influencers/${influencer.id}`, body) : api.post<Influencer>("/influencers", body);
     },
     onSuccess: (i) => {
       qc.invalidateQueries({ queryKey: ["influencers"] });
@@ -94,9 +92,13 @@ export function PartnerFormButton({ influencer }: { influencer?: Influencer }) {
   return (
     <>
       {influencer ? (
-        <Button variant="secondary" icon={<Pencil className="size-4" />} onClick={() => setOpen(true)}>Edit</Button>
+        <Button variant="secondary" icon={<Pencil className="size-4" />} onClick={() => setOpen(true)}>
+          Edit
+        </Button>
       ) : (
-        <Button icon={<Plus className="size-4" />} onClick={() => (reset(toForm()), setOpen(true))}>Add partner</Button>
+        <Button icon={<Plus className="size-4" />} onClick={() => (reset(toForm()), setOpen(true))}>
+          Add partner
+        </Button>
       )}
       <Modal
         open={open}
@@ -105,12 +107,20 @@ export function PartnerFormButton({ influencer }: { influencer?: Influencer }) {
         wide
         footer={
           <>
-            <Button variant="secondary" onClick={() => setOpen(false)}>Cancel</Button>
-            <Button loading={save.isPending} onClick={handleSubmit((f) => save.mutate(f))}>Save</Button>
+            <Button variant="secondary" onClick={() => setOpen(false)}>
+              Cancel
+            </Button>
+            <Button loading={save.isPending} onClick={handleSubmit((f) => save.mutate(f))}>
+              Save
+            </Button>
           </>
         }
       >
-        {save.isError && <div className="mb-4"><Alert tone="danger">{errorMessage(save.error)}</Alert></div>}
+        {save.isError && (
+          <div className="mb-4">
+            <Alert tone="danger">{errorMessage(save.error)}</Alert>
+          </div>
+        )}
         <div className="grid gap-4 sm:grid-cols-2">
           <Field label="Type" required hint="Every type gets codes, points and payouts the same way.">
             <FormSelect control={control} name="type" options={[...PARTNER_TYPES]} />
@@ -119,15 +129,27 @@ export function PartnerFormButton({ influencer }: { influencer?: Influencer }) {
             <Input placeholder={business ? "e.g. Shubh Wedding Planners" : undefined} {...register("name", { required: true })} />
           </Field>
           {business && (
-            <Field label="Contact person" error={err?.field("contactPerson")}><Input {...register("contactPerson")} /></Field>
+            <Field label="Contact person" error={err?.field("contactPerson")}>
+              <Input {...register("contactPerson")} />
+            </Field>
           )}
-          <Field label="Mobile" required error={err?.field("mobile")}><MaskedInput mask="mobile" {...register("mobile", { required: true })} /></Field>
-          <Field label="Email" error={err?.field("email")}><Input type="email" {...register("email")} /></Field>
-          <Field label="Instagram handle"><Input placeholder="@handle" {...register("instagramHandle")} /></Field>
+          <Field label="Mobile" required error={err?.field("mobile")}>
+            <MaskedInput mask="mobile" {...register("mobile", { required: true })} />
+          </Field>
+          <Field label="Email" error={err?.field("email")}>
+            <Input type="email" {...register("email")} />
+          </Field>
+          <Field label="Instagram handle">
+            <Input placeholder="@handle" {...register("instagramHandle")} />
+          </Field>
           {type === "INFLUENCER" && (
             <>
-              <Field label="YouTube channel"><Input {...register("youtubeChannel")} /></Field>
-              <Field label="Followers"><Input type="number" min="0" {...register("followerCount", { valueAsNumber: true })} /></Field>
+              <Field label="YouTube channel">
+                <Input {...register("youtubeChannel")} />
+              </Field>
+              <Field label="Followers">
+                <Input type="number" min="0" {...register("followerCount", { valueAsNumber: true })} />
+              </Field>
             </>
           )}
           {influencer && (
@@ -143,15 +165,27 @@ export function PartnerFormButton({ influencer }: { influencer?: Influencer }) {
             </Field>
           )}
         </div>
-        <h3 className="mb-3 mt-6 text-sm font-semibold">Payout details</h3>
+        <h3 className="mt-6 mb-3 text-sm font-semibold">Payout details</h3>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="UPI ID" error={err?.field("upiId")}><Input placeholder="name@bank" {...register("upiId")} /></Field>
-          <Field label="PAN" error={err?.field("panNumber")} hint="Needed before paying out (TDS)."><MaskedInput mask="pan" placeholder="ABCDE1234F" {...register("panNumber")} /></Field>
-          <Field label="Account holder"><Input {...register("bankAccountName")} /></Field>
-          <Field label="Account number" error={err?.field("bankAccountNumber")}><MaskedInput mask="digits" maxLength={18} {...register("bankAccountNumber")} /></Field>
-          <Field label="IFSC" error={err?.field("bankIfsc")}><MaskedInput mask="ifsc" placeholder="HDFC0001234" {...register("bankIfsc")} /></Field>
+          <Field label="UPI ID" error={err?.field("upiId")}>
+            <Input placeholder="name@bank" {...register("upiId")} />
+          </Field>
+          <Field label="PAN" error={err?.field("panNumber")} hint="Needed before paying out (TDS).">
+            <MaskedInput mask="pan" placeholder="ABCDE1234F" {...register("panNumber")} />
+          </Field>
+          <Field label="Account holder">
+            <Input {...register("bankAccountName")} />
+          </Field>
+          <Field label="Account number" error={err?.field("bankAccountNumber")}>
+            <MaskedInput mask="digits" maxLength={18} {...register("bankAccountNumber")} />
+          </Field>
+          <Field label="IFSC" error={err?.field("bankIfsc")}>
+            <MaskedInput mask="ifsc" placeholder="HDFC0001234" {...register("bankIfsc")} />
+          </Field>
         </div>
-        <Field label="Notes" className="mt-4"><Textarea rows={2} {...register("notes")} /></Field>
+        <Field label="Notes" className="mt-4">
+          <Textarea rows={2} {...register("notes")} />
+        </Field>
         <div className="mt-4">
           <RequiredNote />
         </div>

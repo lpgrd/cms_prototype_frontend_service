@@ -6,7 +6,22 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Alert, Button, Card, ConfirmDialog, ErrorState, Field, HIDE_BELOW, PageHeader, PageSkeleton, StatusBadge, Table, Td, Textarea, Th } from "@/components/ui";
+import {
+  Alert,
+  Button,
+  Card,
+  ConfirmDialog,
+  ErrorState,
+  Field,
+  HIDE_BELOW,
+  PageHeader,
+  PageSkeleton,
+  StatusBadge,
+  Table,
+  Td,
+  Textarea,
+  Th,
+} from "@/components/ui";
 import { api, errorMessage } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { dateTime, grams, inr, mobile, paymentLabel, paymentLines, points } from "@/lib/format";
@@ -20,7 +35,11 @@ export function InvoiceView() {
   const [cancelOpen, setCancelOpen] = useState(false);
   const [reason, setReason] = useState("");
 
-  const { data: tx, isLoading, error } = useQuery({
+  const {
+    data: tx,
+    isLoading,
+    error,
+  } = useQuery({
     queryKey: ["transaction", id],
     queryFn: () => api.get<Transaction>(`/transactions/${id}`),
   });
@@ -68,10 +87,18 @@ export function InvoiceView() {
                 Cancel bill
               </Button>
             )}
-            <Button variant="secondary" icon={<FileDown className="size-4" />} onClick={() => window.open(`/api/transactions/${tx.id}/pdf`, "_blank")}>
+            <Button
+              variant="secondary"
+              icon={<FileDown className="size-4" />}
+              onClick={() => window.open(`/api/transactions/${tx.id}/pdf`, "_blank")}
+            >
               PDF
             </Button>
-            <Button variant="secondary" icon={<ReceiptText className="size-4" />} onClick={() => window.open(`/receipt/${tx.id}`, "_blank")}>
+            <Button
+              variant="secondary"
+              icon={<ReceiptText className="size-4" />}
+              onClick={() => window.open(`/receipt/${tx.id}`, "_blank")}
+            >
               Receipt (80mm)
             </Button>
             <Button icon={<Printer className="size-4" />} onClick={() => window.print()}>
@@ -93,7 +120,7 @@ export function InvoiceView() {
         <div className="flex flex-col justify-between gap-6 border-b border-border pb-6 sm:flex-row">
           <div>
             <div className="font-heading text-3xl font-semibold">{store?.storeName ?? "Tax invoice"}</div>
-            {store?.storeAddress && <div className="mt-1 whitespace-pre-line text-sm text-muted-foreground">{store.storeAddress}</div>}
+            {store?.storeAddress && <div className="mt-1 text-sm whitespace-pre-line text-muted-foreground">{store.storeAddress}</div>}
             <div className="mt-1 text-xs text-muted-foreground">
               {store?.storePhone && <div>Phone {store.storePhone}</div>}
               {store?.gstin && <div>GSTIN {store.gstin}</div>}
@@ -103,7 +130,9 @@ export function InvoiceView() {
             <div className="text-xs text-muted-foreground">Tax invoice</div>
             <div className="font-mono text-lg font-semibold">{tx.invoiceNumber}</div>
             <div className="text-sm text-muted-foreground">{dateTime(tx.createdAt)}</div>
-            <div className="mt-1"><StatusBadge status={tx.status} /></div>
+            <div className="mt-1">
+              <StatusBadge status={tx.status} />
+            </div>
           </div>
         </div>
 
@@ -147,7 +176,11 @@ export function InvoiceView() {
                     <div className="font-medium">{i.description}</div>
                     <div className="text-xs text-muted-foreground">
                       {i.metalType.charAt(0) + i.metalType.slice(1).toLowerCase()} {i.purity}, gross {grams(i.grossWeight)}
-                      {i.huid && <>, HUID <span className="font-mono">{i.huid}</span></>}
+                      {i.huid && (
+                        <>
+                          , HUID <span className="font-mono">{i.huid}</span>
+                        </>
+                      )}
                     </div>
                     {/* The breakdown the hidden columns show on wider screens. */}
                     <div className="mt-1 text-xs text-muted-foreground md:hidden">
@@ -209,7 +242,8 @@ export function InvoiceView() {
         title="Cancel this bill?"
         description={
           <>
-            This marks <span className="font-mono text-foreground">{tx.invoiceNumber}</span> as cancelled and removes it from the customer&apos;s history.
+            This marks <span className="font-mono text-foreground">{tx.invoiceNumber}</span> as cancelled and removes it from the
+            customer&apos;s history.
             {ci && " The customer can use an offer from this campaign again, and the partner's points are taken back."}
           </>
         }

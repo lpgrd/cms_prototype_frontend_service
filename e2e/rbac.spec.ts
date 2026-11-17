@@ -18,7 +18,9 @@ test("superadmin shares only the sales widgets with a new role", async ({ page, 
   // Create a user with the role through the API using the superadmin's session.
   const roles = await (await page.request.get("/api/roles")).json();
   const role = roles.find((r: { name: string }) => r.name === roleName);
-  const created = await page.request.post("/api/users", { data: { email, name: "Accounts User", password: "Passw0rd!x", roleId: role.id } });
+  const created = await page.request.post("/api/users", {
+    data: { email, name: "Accounts User", password: "Passw0rd!x", roleId: role.id },
+  });
   expect(created.status()).toBe(201);
 
   const other = await browser.newContext({ storageState: { cookies: [], origins: [] } });

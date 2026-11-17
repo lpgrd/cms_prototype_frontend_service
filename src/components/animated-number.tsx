@@ -2,8 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const prefersReducedMotion = () =>
-  typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const prefersReducedMotion = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /** Counts up from 0 to `value` once on mount (ease-out). Renders the final value straight away with reduced motion. */
 export function AnimatedNumber({ value, format, duration = 900 }: { value: number; format: (v: number) => string; duration?: number }) {

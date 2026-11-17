@@ -3,8 +3,29 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Plus, Receipt } from "lucide-react";
 import Link from "next/link";
-import { DateRangeFilter, dateRangeParams, EntityFilter, FilterBar, ListEmpty, ListPagination, SortableTh } from "@/components/list-controls";
-import { Badge, Button, Card, ErrorState, HIDE_BELOW, PageHeader, SelectInput, StatusBadge, Table, TableSkeleton, Td, Th } from "@/components/ui";
+import {
+  DateRangeFilter,
+  dateRangeParams,
+  EntityFilter,
+  FilterBar,
+  ListEmpty,
+  ListPagination,
+  SortableTh,
+} from "@/components/list-controls";
+import {
+  Badge,
+  Button,
+  Card,
+  ErrorState,
+  HIDE_BELOW,
+  PageHeader,
+  SelectInput,
+  StatusBadge,
+  Table,
+  TableSkeleton,
+  Td,
+  Th,
+} from "@/components/ui";
 import { useListState } from "@/hooks/use-list-state";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
@@ -65,7 +86,10 @@ export default function TransactionsPage() {
             aria-label="Payment mode"
             value={f.paymentMode}
             onValueChange={(v) => list.setFilter("paymentMode", v)}
-            options={[{ value: "", label: "Any payment" }, ...["CASH", "CARD", "UPI", "BANK_TRANSFER", "CHEQUE", "OTHER", "MIXED"].map((m) => ({ value: m, label: paymentLabel(m) }))]}
+            options={[
+              { value: "", label: "Any payment" },
+              ...["CASH", "CARD", "UPI", "BANK_TRANSFER", "CHEQUE", "OTHER", "MIXED"].map((m) => ({ value: m, label: paymentLabel(m) })),
+            ]}
           />
           <SelectInput
             className="sm:w-40"
@@ -80,15 +104,27 @@ export default function TransactionsPage() {
           />
           {f.withOffer !== "false" && (
             <>
-              <EntityFilter path="/campaigns" placeholder="Any campaign" value={f.campaignId} onChange={(v) => list.setFilter("campaignId", v)} />
-              <EntityFilter path="/influencers" placeholder="Any partner" value={f.influencerId} onChange={(v) => list.setFilter("influencerId", v)} />
+              <EntityFilter
+                path="/campaigns"
+                placeholder="Any campaign"
+                value={f.campaignId}
+                onChange={(v) => list.setFilter("campaignId", v)}
+              />
+              <EntityFilter
+                path="/influencers"
+                placeholder="Any partner"
+                value={f.influencerId}
+                onChange={(v) => list.setFilter("influencerId", v)}
+              />
             </>
           )}
         </FilterBar>
         {isLoading ? (
           <TableSkeleton />
         ) : error ? (
-          <div className="p-4"><ErrorState error={error} /></div>
+          <div className="p-4">
+            <ErrorState error={error} />
+          </div>
         ) : !data?.items.length ? (
           <ListEmpty list={list} noun="bills" icon={Receipt} title="No bills yet" description="Bills you create will appear here." />
         ) : (
@@ -96,12 +132,18 @@ export default function TransactionsPage() {
             <Table>
               <thead>
                 <tr>
-                  <SortableTh column="invoiceNumber" sort={list.sort} onSort={list.toggleSort} firstDir="DESC">Invoice</SortableTh>
+                  <SortableTh column="invoiceNumber" sort={list.sort} onSort={list.toggleSort} firstDir="DESC">
+                    Invoice
+                  </SortableTh>
                   <Th className={HIDE_BELOW.sm}>Customer</Th>
                   <Th className={HIDE_BELOW.lg}>Offer</Th>
-                  <SortableTh column="createdAt" sort={list.sort} onSort={list.toggleSort} firstDir="DESC" className={HIDE_BELOW.md}>Date</SortableTh>
+                  <SortableTh column="createdAt" sort={list.sort} onSort={list.toggleSort} firstDir="DESC" className={HIDE_BELOW.md}>
+                    Date
+                  </SortableTh>
                   <Th className={HIDE_BELOW.lg}>Paid by</Th>
-                  <SortableTh column="grandTotal" sort={list.sort} onSort={list.toggleSort} firstDir="DESC" className="text-right">Total</SortableTh>
+                  <SortableTh column="grandTotal" sort={list.sort} onSort={list.toggleSort} firstDir="DESC" className="text-right">
+                    Total
+                  </SortableTh>
                   <Th className={HIDE_BELOW.md}>Status</Th>
                 </tr>
               </thead>
@@ -136,7 +178,9 @@ export default function TransactionsPage() {
                         </div>
                       )}
                     </Td>
-                    <Td className={HIDE_BELOW.md}><StatusBadge status={t.status} /></Td>
+                    <Td className={HIDE_BELOW.md}>
+                      <StatusBadge status={t.status} />
+                    </Td>
                   </tr>
                 ))}
               </tbody>

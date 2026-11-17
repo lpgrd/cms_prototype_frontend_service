@@ -12,7 +12,10 @@ test("list filters live in the URL, survive a reload and clear in one click", as
 
   await page.reload();
   await expect(page.getByRole("combobox", { name: "Status" })).toHaveText(/Cancelled/);
-  for (const badge of await page.locator("tbody").getByText(/^(Completed|Cancelled)$/).all()) {
+  for (const badge of await page
+    .locator("tbody")
+    .getByText(/^(Completed|Cancelled)$/)
+    .all()) {
     await expect(badge).toHaveText("Cancelled");
   }
 
@@ -25,7 +28,9 @@ test("pages through results, changes page size and sorts by a column", async ({ 
   await signIn(page);
   const tag = `Pg${Date.now().toString(36)}`;
   for (let i = 0; i < 12; i++) {
-    const res = await page.request.post("/api/customers", { data: { mobile: uniqueMobile(), name: `${tag} ${String.fromCharCode(65 + i)}` } });
+    const res = await page.request.post("/api/customers", {
+      data: { mobile: uniqueMobile(), name: `${tag} ${String.fromCharCode(65 + i)}` },
+    });
     expect(res.status()).toBe(201);
   }
 

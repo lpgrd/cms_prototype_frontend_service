@@ -8,7 +8,9 @@ test("the counter enters a bill, scans a partner code and records the sale", asy
   // A partner with a live 10% offer and a 1% reward.
   const mobile = uniqueMobile();
   const partnerName = `Studio ${mobile.slice(-4)}`;
-  const partner = await page.request.post("/api/influencers", { data: { name: partnerName, type: "BUSINESS", mobile, contactPerson: "Ritu" } });
+  const partner = await page.request.post("/api/influencers", {
+    data: { name: partnerName, type: "BUSINESS", mobile, contactPerson: "Ritu" },
+  });
   expect(partner.status()).toBe(201);
   const campaign = await page.request.post("/api/campaigns", {
     data: {
@@ -23,7 +25,9 @@ test("the counter enters a bill, scans a partner code and records the sale", asy
     },
   });
   const campaignId = (await campaign.json()).id;
-  const enrolled = await page.request.post(`/api/campaigns/${campaignId}/influencers`, { data: { influencerId: (await partner.json()).id } });
+  const enrolled = await page.request.post(`/api/campaigns/${campaignId}/influencers`, {
+    data: { influencerId: (await partner.json()).id },
+  });
   const { code } = await enrolled.json();
 
   await page.getByRole("link", { name: "Partner sale" }).click();

@@ -7,7 +7,31 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Alert, Badge, Button, Card, Checkbox, ConfirmDialog, ErrorState, Field, FormSelect, HIDE_BELOW, Input, MaskedInput, Modal, PageHeader, PasswordInput, RequiredNote, SelectInput, Spinner, Table, TableSkeleton, Td, Textarea, Th } from "@/components/ui";
+import {
+  Alert,
+  Badge,
+  Button,
+  Card,
+  Checkbox,
+  ConfirmDialog,
+  ErrorState,
+  Field,
+  FormSelect,
+  HIDE_BELOW,
+  Input,
+  MaskedInput,
+  Modal,
+  PageHeader,
+  PasswordInput,
+  RequiredNote,
+  SelectInput,
+  Spinner,
+  Table,
+  TableSkeleton,
+  Td,
+  Textarea,
+  Th,
+} from "@/components/ui";
 import { api, ApiError, errorMessage } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { date } from "@/lib/format";
@@ -66,20 +90,37 @@ function StoreSettings() {
   });
   const err = save.error instanceof ApiError ? save.error : null;
 
-  if (isLoading) return <Card title="Store" icon={Store}><Spinner rows={6} label="Loading settings…" /></Card>;
+  if (isLoading)
+    return (
+      <Card title="Store" icon={Store}>
+        <Spinner rows={6} label="Loading settings…" />
+      </Card>
+    );
   if (error) return <ErrorState error={error} />;
 
   return (
     <Card title="Store" icon={Store}>
       <form onSubmit={handleSubmit((s) => save.mutate(s))} className="space-y-4">
         {save.isError && <Alert tone="danger">{errorMessage(save.error)}</Alert>}
-        <Field label="Store name" required><Input {...register("storeName", { required: true })} /></Field>
-        <Field label="Address" hint="Printed on invoices."><Textarea rows={2} {...register("storeAddress")} /></Field>
+        <Field label="Store name" required>
+          <Input {...register("storeName", { required: true })} />
+        </Field>
+        <Field label="Address" hint="Printed on invoices.">
+          <Textarea rows={2} {...register("storeAddress")} />
+        </Field>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Phone"><MaskedInput mask="phone" {...register("storePhone")} /></Field>
-          <Field label="GSTIN" error={err?.field("gstin")}><MaskedInput mask="upper" maxLength={15} placeholder="22AAAAA0000A1Z5" {...register("gstin")} /></Field>
-          <Field label="Invoice prefix" required error={err?.field("invoicePrefix")} hint="e.g. INV gives INV/2026-27/00001"><MaskedInput mask="upper" maxLength={12} {...register("invoicePrefix", { required: true })} /></Field>
-          <Field label="GST rate (%)"><Input type="number" step="0.01" min="0" {...register("taxRate")} /></Field>
+          <Field label="Phone">
+            <MaskedInput mask="phone" {...register("storePhone")} />
+          </Field>
+          <Field label="GSTIN" error={err?.field("gstin")}>
+            <MaskedInput mask="upper" maxLength={15} placeholder="22AAAAA0000A1Z5" {...register("gstin")} />
+          </Field>
+          <Field label="Invoice prefix" required error={err?.field("invoicePrefix")} hint="e.g. INV gives INV/2026-27/00001">
+            <MaskedInput mask="upper" maxLength={12} {...register("invoicePrefix", { required: true })} />
+          </Field>
+          <Field label="GST rate (%)">
+            <Input type="number" step="0.01" min="0" {...register("taxRate")} />
+          </Field>
         </div>
         <Controller
           control={control}
@@ -90,8 +131,12 @@ function StoreSettings() {
         />
         <h3 className="border-t border-border pt-4 text-sm font-semibold">Partner rewards</h3>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Value of 1 point (₹)" hint="Applies to new payout requests."><Input type="number" step="0.0001" min="0" {...register("pointValue")} /></Field>
-          <Field label="Minimum payout (points)"><Input type="number" step="0.01" min="0" {...register("minPayoutPoints")} /></Field>
+          <Field label="Value of 1 point (₹)" hint="Applies to new payout requests.">
+            <Input type="number" step="0.0001" min="0" {...register("pointValue")} />
+          </Field>
+          <Field label="Minimum payout (points)">
+            <Input type="number" step="0.01" min="0" {...register("minPayoutPoints")} />
+          </Field>
           <Field label="Points hold period (days)" hint="Return window before earned points become payable.">
             <Input type="number" step="1" min="0" max="365" {...register("pointsHoldDays")} />
           </Field>
@@ -103,7 +148,11 @@ function StoreSettings() {
           control={control}
           name="requireRedemptionOtp"
           render={({ field }) => (
-            <Checkbox label="Verify the customer's mobile with an SMS OTP before applying a partner code" checked={!!field.value} onCheckedChange={field.onChange} />
+            <Checkbox
+              label="Verify the customer's mobile with an SMS OTP before applying a partner code"
+              checked={!!field.value}
+              onCheckedChange={field.onChange}
+            />
           )}
         />
         {authOptions.data && !authOptions.data.smsOtp && (
@@ -132,7 +181,9 @@ function StoreSettings() {
           )}
         />
         <div className="flex justify-end">
-          <Button type="submit" loading={save.isPending}>Save settings</Button>
+          <Button type="submit" loading={save.isPending}>
+            Save settings
+          </Button>
         </div>
       </form>
     </Card>
@@ -159,14 +210,21 @@ function UsersCard() {
 
   return (
     <Card
-      title="People with access" icon={UsersRound}
+      title="People with access"
+      icon={UsersRound}
       padded={false}
-      actions={<Button size="sm" icon={<UserPlus className="size-4" />} onClick={() => setOpen(true)}>Add staff</Button>}
+      actions={
+        <Button size="sm" icon={<UserPlus className="size-4" />} onClick={() => setOpen(true)}>
+          Add staff
+        </Button>
+      }
     >
       {isLoading ? (
         <TableSkeleton rows={3} columns={4} />
       ) : error ? (
-        <div className="p-4"><ErrorState error={error} /></div>
+        <div className="p-4">
+          <ErrorState error={error} />
+        </div>
       ) : (
         <Table>
           <thead>
@@ -185,7 +243,11 @@ function UsersCard() {
                   <div className="font-medium">{u.name}</div>
                   <div className="max-w-56 truncate text-xs text-muted-foreground">{u.email}</div>
                   <div className="mt-1 flex flex-wrap gap-1 sm:hidden">
-                    {u.accountType === "PARTNER" ? <Badge>Partner</Badge> : <Badge tone={u.role?.isSuperadmin ? "gold" : "info"}>{u.role?.name}</Badge>}
+                    {u.accountType === "PARTNER" ? (
+                      <Badge>Partner</Badge>
+                    ) : (
+                      <Badge tone={u.role?.isSuperadmin ? "gold" : "info"}>{u.role?.name}</Badge>
+                    )}
                     {!u.isActive && <Badge tone="danger">Disabled</Badge>}
                   </div>
                 </Td>
@@ -208,7 +270,9 @@ function UsersCard() {
                         {u.accountType === "INTERNAL" && <DropdownMenuItem onClick={() => setRoleFor(u)}>Change role…</DropdownMenuItem>}
                         <DropdownMenuItem onClick={() => setResetFor(u)}>Reset access…</DropdownMenuItem>
                         {u.isActive ? (
-                          <DropdownMenuItem variant="destructive" onClick={() => setDisableFor(u)}>Disable login…</DropdownMenuItem>
+                          <DropdownMenuItem variant="destructive" onClick={() => setDisableFor(u)}>
+                            Disable login…
+                          </DropdownMenuItem>
                         ) : (
                           <DropdownMenuItem onClick={() => toggle.mutate(u)}>Enable login</DropdownMenuItem>
                         )}
@@ -241,10 +305,18 @@ function UsersCard() {
 function AddUserDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const qc = useQueryClient();
   const roles = useAssignableRoles();
-  const { register, handleSubmit, reset, control, setValue } = useForm({ defaultValues: { name: "", email: "", password: "", roleId: "" } });
+  const { register, handleSubmit, reset, control, setValue } = useForm({
+    defaultValues: { name: "", email: "", password: "", roleId: "" },
+  });
   const create = useMutation({
     mutationFn: (v: { name: string; email: string; password: string; roleId: string }) => api.post("/users", v),
-    onSuccess: () => (qc.invalidateQueries({ queryKey: ["users"] }), qc.invalidateQueries({ queryKey: ["roles"] }), reset(), onClose(), toast.success("User added")),
+    onSuccess: () => (
+      qc.invalidateQueries({ queryKey: ["users"] }),
+      qc.invalidateQueries({ queryKey: ["roles"] }),
+      reset(),
+      onClose(),
+      toast.success("User added")
+    ),
   });
   return (
     <Modal
@@ -253,20 +325,37 @@ function AddUserDialog({ open, onClose }: { open: boolean; onClose: () => void }
       title="Add a user"
       footer={
         <>
-          <Button variant="secondary" onClick={onClose}>Cancel</Button>
-          <Button loading={create.isPending} onClick={handleSubmit((v) => create.mutate(v))}>Add user</Button>
+          <Button variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button loading={create.isPending} onClick={handleSubmit((v) => create.mutate(v))}>
+            Add user
+          </Button>
         </>
       }
     >
       <div className="space-y-4">
         {create.isError && <Alert tone="danger">{errorMessage(create.error)}</Alert>}
-        <Field label="Name" required><Input {...register("name", { required: true })} /></Field>
-        <Field label="Email" required><Input type="email" {...register("email", { required: true })} /></Field>
+        <Field label="Name" required>
+          <Input {...register("name", { required: true })} />
+        </Field>
+        <Field label="Email" required>
+          <Input type="email" {...register("email", { required: true })} />
+        </Field>
         <Field label="Temporary password" required hint="At least 8 characters. Share it with them directly.">
-          <PasswordInput autoComplete="new-password" {...register("password", { required: true })} onGenerate={(p) => setValue("password", p)} />
+          <PasswordInput
+            autoComplete="new-password"
+            {...register("password", { required: true })}
+            onGenerate={(p) => setValue("password", p)}
+          />
         </Field>
         <Field label="Role" required hint="What they can do is set per role under Roles & access.">
-          <FormSelect control={control} name="roleId" placeholder="Choose a role" options={roles.map((r) => ({ value: r.id, label: r.name }))} />
+          <FormSelect
+            control={control}
+            name="roleId"
+            placeholder="Choose a role"
+            options={roles.map((r) => ({ value: r.id, label: r.name }))}
+          />
         </Field>
         <RequiredNote />
       </div>
@@ -294,8 +383,12 @@ function ChangeRoleDialog({ user, onClose }: { user: User; onClose: () => void }
       title={`Change role for ${user.name}`}
       footer={
         <>
-          <Button variant="secondary" onClick={onClose}>Cancel</Button>
-          <Button loading={save.isPending} disabled={!roleId || roleId === user.roleId} onClick={() => save.mutate()}>Save</Button>
+          <Button variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button loading={save.isPending} disabled={!roleId || roleId === user.roleId} onClick={() => save.mutate()}>
+            Save
+          </Button>
         </>
       }
     >
@@ -315,8 +408,7 @@ function ResetAccessDialog({ user, onClose }: { user: User; onClose: () => void 
   const [password, setPassword] = useState("");
   const [clear2fa, setClear2fa] = useState(false);
   const save = useMutation({
-    mutationFn: () =>
-      api.patch(`/users/${user.id}`, { ...(password ? { password } : {}), ...(clear2fa ? { resetTwoFactor: true } : {}) }),
+    mutationFn: () => api.patch(`/users/${user.id}`, { ...(password ? { password } : {}), ...(clear2fa ? { resetTwoFactor: true } : {}) }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["users"] });
       onClose();
@@ -332,15 +424,24 @@ function ResetAccessDialog({ user, onClose }: { user: User; onClose: () => void 
       title={`Reset access for ${user.name}`}
       footer={
         <>
-          <Button variant="secondary" onClick={onClose}>Cancel</Button>
-          <Button loading={save.isPending} disabled={!valid} onClick={() => save.mutate()}>Reset</Button>
+          <Button variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button loading={save.isPending} disabled={!valid} onClick={() => save.mutate()}>
+            Reset
+          </Button>
         </>
       }
     >
       <div className="space-y-4">
         {save.isError && <Alert tone="danger">{errorMessage(save.error)}</Alert>}
         <Field label="New temporary password" hint="Leave empty to keep the current password. At least 8 characters.">
-          <PasswordInput autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} onGenerate={setPassword} />
+          <PasswordInput
+            autoComplete="new-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            onGenerate={setPassword}
+          />
         </Field>
         {user.totpEnabled && (
           <Checkbox label="Turn off their two-step verification (lost phone)" checked={clear2fa} onCheckedChange={setClear2fa} />

@@ -1,14 +1,39 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AtSign, BadgePercent, CalendarClock, HandCoins, MessageSquareText, ReceiptIndianRupee, ScanLine, UserCheck, UserPlus, UserRound, X } from "lucide-react";
+import {
+  AtSign,
+  BadgePercent,
+  CalendarClock,
+  HandCoins,
+  MessageSquareText,
+  ReceiptIndianRupee,
+  ScanLine,
+  UserCheck,
+  UserPlus,
+  UserRound,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { CustomerMobileInput } from "@/components/customer-mobile-input";
 import { QrScannerModal } from "@/components/qr-scanner";
-import { Alert, Badge, Button, Card, Empty, Field, InlineLoading, Input, MaskedInput, PageHeader, RequiredNote, Textarea } from "@/components/ui";
+import {
+  Alert,
+  Badge,
+  Button,
+  Card,
+  Empty,
+  Field,
+  InlineLoading,
+  Input,
+  MaskedInput,
+  PageHeader,
+  RequiredNote,
+  Textarea,
+} from "@/components/ui";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { useDebounced } from "@/hooks/use-debounced";
@@ -133,7 +158,9 @@ export default function PartnerSalePage() {
         description="Enter the bill amount from your billing system, then scan the partner's QR."
         actions={
           <Link href="/sales">
-            <Button variant="secondary" icon={<ReceiptIndianRupee className="size-4" />}>All sales</Button>
+            <Button variant="secondary" icon={<ReceiptIndianRupee className="size-4" />}>
+              All sales
+            </Button>
           </Link>
         }
       />
@@ -177,16 +204,37 @@ export default function PartnerSalePage() {
             </Field>
 
             {data?.makingChargesRequired && (
-              <Field label="Making charges (₹)" required className="mt-4" hint="This offer is calculated on making charges, so enter them from the bill.">
-                <Input type="number" inputMode="decimal" step="0.01" min="0" className="tabular" {...register("makingCharges", { valueAsNumber: true })} />
+              <Field
+                label="Making charges (₹)"
+                required
+                className="mt-4"
+                hint="This offer is calculated on making charges, so enter them from the bill."
+              >
+                <Input
+                  type="number"
+                  inputMode="decimal"
+                  step="0.01"
+                  min="0"
+                  className="tabular"
+                  {...register("makingCharges", { valueAsNumber: true })}
+                />
               </Field>
             )}
           </Card>
 
           <Card title="Customer" icon={UserRound} actions={<span className="text-xs text-muted-foreground">Optional</span>}>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Mobile number" hint={otpRequired ? "Needed: the offer applies once the customer confirms an OTP." : "Adds the sale to the customer's history."}>
-                <CustomerMobileInput field={register("mobile")} value={mobile} onPick={(m) => setValue("mobile", m, { shouldDirty: true })} />
+              <Field
+                label="Mobile number"
+                hint={
+                  otpRequired ? "Needed: the offer applies once the customer confirms an OTP." : "Adds the sale to the customer's history."
+                }
+              >
+                <CustomerMobileInput
+                  field={register("mobile")}
+                  value={mobile}
+                  onPick={(m) => setValue("mobile", m, { shouldDirty: true })}
+                />
               </Field>
               {mobileValid && lookup.isFetching && !lookup.data && (
                 <div className="flex items-end pb-2.5">
@@ -202,7 +250,15 @@ export default function PartnerSalePage() {
                 </div>
               )}
               {mobileValid && lookup.isSuccess && !existing && (
-                <Field label="Name" required hint={<span className="inline-flex items-center gap-1"><UserPlus className="size-3" /> New customer</span>}>
+                <Field
+                  label="Name"
+                  required
+                  hint={
+                    <span className="inline-flex items-center gap-1">
+                      <UserPlus className="size-3" /> New customer
+                    </span>
+                  }
+                >
                   <Input {...register("name")} />
                 </Field>
               )}
@@ -213,7 +269,9 @@ export default function PartnerSalePage() {
                 <div className="flex items-center gap-2 text-sm font-medium">
                   <MessageSquareText className="size-4" /> Verify the customer&apos;s mobile
                 </div>
-                <p className="text-xs text-muted-foreground">We text a one-time code to +91 {mobile}. The offer applies only after the customer reads it out.</p>
+                <p className="text-xs text-muted-foreground">
+                  We text a one-time code to +91 {mobile}. The offer applies only after the customer reads it out.
+                </p>
                 <div className="flex gap-2">
                   <Button type="button" variant="secondary" loading={sendOtp.isPending} onClick={() => sendOtp.mutate()}>
                     {activeOtp ? "Resend OTP" : "Send OTP"}
@@ -238,17 +296,26 @@ export default function PartnerSalePage() {
         <div id="sale-summary" className="space-y-6 lg:sticky lg:top-16 lg:col-span-2 lg:self-start">
           <Card title="Partner" icon={HandCoins} actions={offer && updating ? <InlineLoading>Checking…</InlineLoading> : undefined}>
             {!code ? (
-              <Empty icon={ScanLine} title="No partner yet" description="Scan the partner's QR or type their code to see who they are and the offer." />
+              <Empty
+                icon={ScanLine}
+                title="No partner yet"
+                description="Scan the partner's QR or type their code to see who they are and the offer."
+              />
             ) : !offer ? (
               updating || !data ? (
                 <PartnerSkeleton />
               ) : (
-                <Alert tone="danger">{data.codeError?.message ?? (preview.isError ? errorMessage(preview.error) : "This code could not be checked")}</Alert>
+                <Alert tone="danger">
+                  {data.codeError?.message ?? (preview.isError ? errorMessage(preview.error) : "This code could not be checked")}
+                </Alert>
               )
             ) : (
               <div className="space-y-4">
                 <div className="flex items-start gap-3">
-                  <span aria-hidden className="grid size-11 shrink-0 place-items-center rounded-full bg-primary/10 font-heading text-lg font-semibold text-primary">
+                  <span
+                    aria-hidden
+                    className="grid size-11 shrink-0 place-items-center rounded-full bg-primary/10 font-heading text-lg font-semibold text-primary"
+                  >
                     {offer.partner.name.charAt(0).toUpperCase()}
                   </span>
                   <div className="min-w-0 flex-1">
@@ -259,7 +326,10 @@ export default function PartnerSalePage() {
                     <div className="mt-0.5 space-y-0.5 text-xs text-muted-foreground">
                       {offer.partner.contactPerson && <div>Contact: {offer.partner.contactPerson}</div>}
                       {offer.partner.instagramHandle && (
-                        <div className="flex items-center gap-1"><AtSign className="size-3" />{offer.partner.instagramHandle.replace(/^@/, "")}</div>
+                        <div className="flex items-center gap-1">
+                          <AtSign className="size-3" />
+                          {offer.partner.instagramHandle.replace(/^@/, "")}
+                        </div>
                       )}
                     </div>
                   </div>
@@ -272,7 +342,9 @@ export default function PartnerSalePage() {
                   <div className="mt-1 pl-6 text-xs text-muted-foreground">
                     {offer.campaign.name}, code <span className="font-mono">{offer.code}</span>
                     {offer.campaign.endsAt && (
-                      <div className="mt-0.5 flex items-center gap-1"><CalendarClock className="size-3" /> Runs until {date(offer.campaign.endsAt)}</div>
+                      <div className="mt-0.5 flex items-center gap-1">
+                        <CalendarClock className="size-3" /> Runs until {date(offer.campaign.endsAt)}
+                      </div>
                     )}
                   </div>
                 </div>
@@ -281,10 +353,18 @@ export default function PartnerSalePage() {
             )}
           </Card>
 
-          <Card title="Final bill" icon={ReceiptIndianRupee} actions={updating && billAmount ? <InlineLoading>Updating…</InlineLoading> : undefined}>
+          <Card
+            title="Final bill"
+            icon={ReceiptIndianRupee}
+            actions={updating && billAmount ? <InlineLoading>Updating…</InlineLoading> : undefined}
+          >
             <dl className={cn("tabular space-y-2 text-sm transition-opacity", updating && "opacity-50")} aria-busy={updating}>
               <Row label="Bill amount" value={inr(billAmount ?? null)} />
-              <Row label="Partner discount" value={amounts ? `− ${inr(amounts.discountAmount)}` : "—"} highlight={!!amounts?.discountAmount} />
+              <Row
+                label="Partner discount"
+                value={amounts ? `− ${inr(amounts.discountAmount)}` : "—"}
+                highlight={!!amounts?.discountAmount}
+              />
               <div className="flex items-baseline justify-between border-t border-border pt-3">
                 <dt className="font-medium">Customer pays</dt>
                 <dd className="text-3xl font-semibold tracking-tight" aria-live="polite">
@@ -304,7 +384,13 @@ export default function PartnerSalePage() {
               <Field label="Notes">
                 <Textarea rows={2} {...register("notes")} />
               </Field>
-              <Button type="submit" className="w-full" icon={<HandCoins className="size-4" />} loading={record.isPending} disabled={!amounts || !!codeError || updating}>
+              <Button
+                type="submit"
+                className="w-full"
+                icon={<HandCoins className="size-4" />}
+                loading={record.isPending}
+                disabled={!amounts || !!codeError || updating}
+              >
                 Record sale
               </Button>
               <RequiredNote />

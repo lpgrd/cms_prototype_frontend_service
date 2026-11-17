@@ -331,7 +331,15 @@ export interface BillPreview {
 }
 
 export interface ComplianceIssue {
-  code: "PAN_REQUIRED" | "PAN_INVALID" | "CASH_LIMIT" | "CASH_AMOUNT_INVALID" | "HUID_REQUIRED" | "HUID_INVALID" | "HUID_DUPLICATE" | "HUID_ALREADY_SOLD";
+  code:
+    | "PAN_REQUIRED"
+    | "PAN_INVALID"
+    | "CASH_LIMIT"
+    | "CASH_AMOUNT_INVALID"
+    | "HUID_REQUIRED"
+    | "HUID_INVALID"
+    | "HUID_DUPLICATE"
+    | "HUID_ALREADY_SOLD";
   message: string;
   itemIndex?: number;
 }

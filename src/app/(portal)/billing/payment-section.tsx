@@ -108,7 +108,10 @@ export function PaymentSection<T extends PaymentFormValues>({
     <fieldset className="space-y-3">
       <div className="flex items-center justify-between gap-2">
         <legend className="text-sm font-medium">
-          Payments <span aria-hidden className="text-destructive">*</span>
+          Payments{" "}
+          <span aria-hidden className="text-destructive">
+            *
+          </span>
           <span className="sr-only"> (required)</span>
         </legend>
         <Button type="button" variant="ghost" size="sm" icon={<X className="size-4" />} onClick={stopSplit}>
@@ -188,7 +191,10 @@ function SplitStatus({ total, paid, remaining }: { total?: number; paid: number;
     <div className="space-y-1.5" aria-live="polite">
       <div className="h-1.5 overflow-hidden rounded-full bg-muted" aria-hidden>
         <div
-          className={cn("h-full rounded-full transition-[width] motion-reduce:transition-none", remaining < 0 ? "bg-destructive" : "bg-primary")}
+          className={cn(
+            "h-full rounded-full transition-[width] motion-reduce:transition-none",
+            remaining < 0 ? "bg-destructive" : "bg-primary",
+          )}
           style={{ width: `${pct}%` }}
         />
       </div>

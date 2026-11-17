@@ -20,7 +20,7 @@ function Brand() {
 export function AuthShell({ children, footer }: { children: ReactNode; footer?: { href: string; label: string } }) {
   return (
     <div className="relative flex min-h-svh flex-col items-center justify-center px-4 py-12">
-      <div className="absolute right-4 top-4">
+      <div className="absolute top-4 right-4">
         <ModeToggle />
       </div>
       <main className="w-full max-w-sm space-y-8">

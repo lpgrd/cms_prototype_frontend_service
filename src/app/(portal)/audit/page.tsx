@@ -49,7 +49,13 @@ export default function AuditPage() {
       <PageHeader title="Audit log" description="Who did what and when: sign-ins, bill cancellations, payouts, settings and more." />
       <Card padded={false}>
         <FilterBar list={list} placeholder="Invoice number, name or detail">
-          <SelectInput className="sm:w-52" aria-label="Activity" value={f.area} onValueChange={(v) => list.setFilter("area", v)} options={AREAS} />
+          <SelectInput
+            className="sm:w-52"
+            aria-label="Activity"
+            value={f.area}
+            onValueChange={(v) => list.setFilter("area", v)}
+            options={AREAS}
+          />
           <DateRangeFilter from={f.from} to={f.to} onChange={(from, to) => list.setFilters({ from, to })} />
         </FilterBar>
         {isLoading ? (

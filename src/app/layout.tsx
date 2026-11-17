@@ -5,10 +5,9 @@ import { AppProviders } from "@/providers/app-providers";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
-const instrumentSansHeading = Instrument_Sans({subsets:['latin'],variable:'--font-heading'});
+const instrumentSansHeading = Instrument_Sans({ subsets: ["latin"], variable: "--font-heading" });
 
-const geistMono = Geist_Mono({subsets:['latin'],variable:'--font-mono'});
-
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-mono" });
 
 export const metadata: Metadata = {
   title: { default: "GJ-CRM", template: "%s | GJ-CRM" },

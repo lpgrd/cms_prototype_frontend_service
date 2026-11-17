@@ -5,8 +5,33 @@ import { Ban, HandCoins, IndianRupee, Plus, ReceiptIndianRupee, Sparkles, Ticket
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
-import { DateRangeFilter, dateRangeParams, EntityFilter, FilterBar, ListEmpty, ListPagination, SortableTh } from "@/components/list-controls";
-import { Alert, Button, Card, ConfirmDialog, ErrorState, Field, HIDE_BELOW, PageHeader, SelectInput, Stat, StatusBadge, Table, TableSkeleton, Td, Textarea, Th } from "@/components/ui";
+import {
+  DateRangeFilter,
+  dateRangeParams,
+  EntityFilter,
+  FilterBar,
+  ListEmpty,
+  ListPagination,
+  SortableTh,
+} from "@/components/list-controls";
+import {
+  Alert,
+  Button,
+  Card,
+  ConfirmDialog,
+  ErrorState,
+  Field,
+  HIDE_BELOW,
+  PageHeader,
+  SelectInput,
+  Stat,
+  StatusBadge,
+  Table,
+  TableSkeleton,
+  Td,
+  Textarea,
+  Th,
+} from "@/components/ui";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useListState } from "@/hooks/use-list-state";
 import { api, errorMessage } from "@/lib/api";
@@ -54,7 +79,12 @@ export default function SalesPage() {
 
       {/* Totals follow the filters, so a date range or partner gives that period's or partner's figures. */}
       <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Stat icon={ReceiptIndianRupee} label="Billed" value={totals ? inrShort(totals.billAmount) : <StatLoading />} sub={totals ? `${number(totals.sales)} sales` : undefined} />
+        <Stat
+          icon={ReceiptIndianRupee}
+          label="Billed"
+          value={totals ? inrShort(totals.billAmount) : <StatLoading />}
+          sub={totals ? `${number(totals.sales)} sales` : undefined}
+        />
         <Stat icon={TicketPercent} label="Discount given" value={totals ? inrShort(totals.discountAmount) : <StatLoading />} />
         <Stat icon={IndianRupee} label="Customers paid" value={totals ? inrShort(totals.finalAmount) : <StatLoading />} accent />
         <Stat icon={Sparkles} label="Partner points" value={totals ? points(totals.pointsAwarded) : <StatLoading />} />
@@ -74,28 +104,62 @@ export default function SalesPage() {
               { value: "CANCELLED", label: "Cancelled" },
             ]}
           />
-          <EntityFilter path="/campaigns" placeholder="Any campaign" value={f.campaignId} onChange={(v) => list.setFilter("campaignId", v)} />
-          <EntityFilter path="/influencers" placeholder="Any partner" value={f.influencerId} onChange={(v) => list.setFilter("influencerId", v)} />
+          <EntityFilter
+            path="/campaigns"
+            placeholder="Any campaign"
+            value={f.campaignId}
+            onChange={(v) => list.setFilter("campaignId", v)}
+          />
+          <EntityFilter
+            path="/influencers"
+            placeholder="Any partner"
+            value={f.influencerId}
+            onChange={(v) => list.setFilter("influencerId", v)}
+          />
         </FilterBar>
         {isLoading ? (
           <TableSkeleton />
         ) : error ? (
-          <div className="p-4"><ErrorState error={error} /></div>
+          <div className="p-4">
+            <ErrorState error={error} />
+          </div>
         ) : !data?.items.length ? (
-          <ListEmpty list={list} noun="sales" icon={HandCoins} title="No partner sales yet" description="Sales you record with a partner code will appear here." />
+          <ListEmpty
+            list={list}
+            noun="sales"
+            icon={HandCoins}
+            title="No partner sales yet"
+            description="Sales you record with a partner code will appear here."
+          />
         ) : (
           <div className={isFetching ? "opacity-60 transition-opacity" : "transition-opacity"} aria-busy={isFetching}>
             <Table>
               <thead>
                 <tr>
-                  <SortableTh column="createdAt" sort={list.sort} onSort={list.toggleSort} firstDir="DESC">Sale</SortableTh>
+                  <SortableTh column="createdAt" sort={list.sort} onSort={list.toggleSort} firstDir="DESC">
+                    Sale
+                  </SortableTh>
                   <Th className={HIDE_BELOW.sm}>Partner</Th>
                   <Th className={CUSTOMER_COL}>Customer</Th>
-                  <SortableTh column="billAmount" sort={list.sort} onSort={list.toggleSort} firstDir="DESC" className={cn(HIDE_BELOW.lg, "text-right")}>Bill</SortableTh>
+                  <SortableTh
+                    column="billAmount"
+                    sort={list.sort}
+                    onSort={list.toggleSort}
+                    firstDir="DESC"
+                    className={cn(HIDE_BELOW.lg, "text-right")}
+                  >
+                    Bill
+                  </SortableTh>
                   <Th className={cn(HIDE_BELOW.lg, "text-right")}>Discount</Th>
-                  <SortableTh column="finalAmount" sort={list.sort} onSort={list.toggleSort} firstDir="DESC" className="text-right">Paid</SortableTh>
+                  <SortableTh column="finalAmount" sort={list.sort} onSort={list.toggleSort} firstDir="DESC" className="text-right">
+                    Paid
+                  </SortableTh>
                   <Th className={HIDE_BELOW.md}>Status</Th>
-                  {can("bills.cancel") && <Th className="w-10"><span className="sr-only">Actions</span></Th>}
+                  {can("bills.cancel") && (
+                    <Th className="w-10">
+                      <span className="sr-only">Actions</span>
+                    </Th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -106,7 +170,10 @@ export default function SalesPage() {
                         #{s.number}
                         {s.billReference && <span className="font-normal text-muted-foreground">, bill {s.billReference}</span>}
                       </div>
-                      <div className="mt-0.5 text-xs whitespace-nowrap text-muted-foreground" title={s.recordedBy ? `Recorded by ${s.recordedBy.name}` : undefined}>
+                      <div
+                        className="mt-0.5 text-xs whitespace-nowrap text-muted-foreground"
+                        title={s.recordedBy ? `Recorded by ${s.recordedBy.name}` : undefined}
+                      >
                         {dateTime(s.createdAt)}
                       </div>
                       <div className="mt-0.5 truncate text-sm font-medium sm:hidden">{s.influencer?.name}</div>
@@ -122,7 +189,9 @@ export default function SalesPage() {
                       {s.customer ? (
                         <>
                           {can("customers.view") ? (
-                            <Link href={`/customers/${s.customer.id}`} className="font-medium whitespace-nowrap hover:text-primary">{s.customer.name}</Link>
+                            <Link href={`/customers/${s.customer.id}`} className="font-medium whitespace-nowrap hover:text-primary">
+                              {s.customer.name}
+                            </Link>
                           ) : (
                             <div className="font-medium whitespace-nowrap">{s.customer.name}</div>
                           )}
@@ -145,7 +214,11 @@ export default function SalesPage() {
                     </Td>
                     <Td className={HIDE_BELOW.md}>
                       <StatusBadge status={s.status} />
-                      {s.cancelReason && <div className="mt-1 max-w-40 truncate text-xs text-muted-foreground" title={s.cancelReason}>{s.cancelReason}</div>}
+                      {s.cancelReason && (
+                        <div className="mt-1 max-w-40 truncate text-xs text-muted-foreground" title={s.cancelReason}>
+                          {s.cancelReason}
+                        </div>
+                      )}
                     </Td>
                     {can("bills.cancel") && (
                       <Td>
@@ -200,7 +273,8 @@ function CancelSaleDialog({ sale, onClose }: { sale: PartnerSale; onClose: () =>
       title={`Cancel sale #${sale.number}?`}
       description={
         <>
-          {sale.influencer?.name} loses the {points(sale.pointsAwarded)} earned on it, and it no longer counts in the customer&apos;s purchases or the campaign&apos;s figures.
+          {sale.influencer?.name} loses the {points(sale.pointsAwarded)} earned on it, and it no longer counts in the customer&apos;s
+          purchases or the campaign&apos;s figures.
         </>
       }
       confirmLabel="Cancel sale"

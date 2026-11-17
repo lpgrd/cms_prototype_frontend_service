@@ -9,7 +9,12 @@ import { cn } from "@/lib/utils";
 export function HallmarkStamp({ text, className }: { text: string; className?: string }) {
   const rim = useId();
   return (
-    <div className={cn("relative size-40 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:zoom-in-110 motion-safe:duration-700", className)}>
+    <div
+      className={cn(
+        "relative size-40 motion-safe:animate-in motion-safe:duration-700 motion-safe:fade-in-0 motion-safe:zoom-in-110",
+        className,
+      )}
+    >
       <svg viewBox="0 0 160 160" className="absolute inset-0 size-full" aria-hidden>
         <defs>
           <path id={rim} d="M 80,80 m -62,0 a 62,62 0 1,1 124,0 a 62,62 0 1,1 -124,0" />

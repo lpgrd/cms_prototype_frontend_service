@@ -61,7 +61,11 @@ export default function DashboardPage() {
 
       {nothingShared && (
         <Card>
-          <Empty icon={LayoutDashboard} title="No dashboard widgets are shared with your role" description="Ask a superadmin to share the widgets you need under Roles & access." />
+          <Empty
+            icon={LayoutDashboard}
+            title="No dashboard widgets are shared with your role"
+            description="Ask a superadmin to share the widgets you need under Roles & access."
+          />
         </Card>
       )}
 

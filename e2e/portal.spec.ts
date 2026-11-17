@@ -67,4 +67,3 @@ test("owner can open reports and the audit log", async ({ page }) => {
   await page.getByRole("link", { name: "Audit log" }).click();
   await expect(page.getByText("auth.login").first()).toBeVisible();
 });
-

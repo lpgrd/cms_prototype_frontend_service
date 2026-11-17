@@ -1,4 +1,20 @@
-import { BadgePercent, FileBarChart, Handshake, HandCoins, KeyRound, LayoutDashboard, Receipt, ReceiptIndianRupee, ScanLine, ScrollText, Settings, Sparkles, Users, Wallet, type LucideIcon } from "lucide-react";
+import {
+  BadgePercent,
+  FileBarChart,
+  Handshake,
+  HandCoins,
+  KeyRound,
+  LayoutDashboard,
+  Receipt,
+  ReceiptIndianRupee,
+  ScanLine,
+  ScrollText,
+  Settings,
+  Sparkles,
+  Users,
+  Wallet,
+  type LucideIcon,
+} from "lucide-react";
 import { FULL_BILLING } from "@/lib/features";
 import type { Me, Permission } from "@/lib/types";
 

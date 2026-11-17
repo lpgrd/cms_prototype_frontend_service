@@ -53,8 +53,17 @@ export function phone(v: string | null | undefined) {
 
 /** Payment mode for display: UPI, Card, Cash, Bank transfer, Mixed. */
 export const paymentLabel = (mode: string | null | undefined) =>
-  !mode ? "—" : mode === "UPI" ? "UPI" : mode === "MIXED" ? "Split" : titleCase(mode).replace(/^(\w)(.*)$/, (_, a: string, b: string) => a + b.toLowerCase());
+  !mode
+    ? "—"
+    : mode === "UPI"
+      ? "UPI"
+      : mode === "MIXED"
+        ? "Split"
+        : titleCase(mode).replace(/^(\w)(.*)$/, (_, a: string, b: string) => a + b.toLowerCase());
 
 /** Payment lines for display; bills from before split payments fall back to their single mode. */
-export const paymentLines = (t: { paymentMode: string; grandTotal: number; payments?: { method: string; amount: number; reference: string | null }[] }) =>
-  t.payments?.length ? t.payments : [{ method: t.paymentMode, amount: t.grandTotal, reference: null }];
+export const paymentLines = (t: {
+  paymentMode: string;
+  grandTotal: number;
+  payments?: { method: string; amount: number; reference: string | null }[];
+}) => (t.payments?.length ? t.payments : [{ method: t.paymentMode, amount: t.grandTotal, reference: null }]);

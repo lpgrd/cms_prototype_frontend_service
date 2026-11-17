@@ -4,7 +4,9 @@ import type { Campaign, ValueType } from "@/lib/types";
 const value = (type: ValueType, v: number, unit: "₹" | "pts") =>
   type === "PERCENTAGE" ? `${v}%` : unit === "₹" ? inrShort(v) : `${v} pts`;
 
-export function describeOffer(c: Pick<Campaign, "discountType" | "discountValue" | "discountBase" | "maxDiscountAmount" | "minBillAmount">) {
+export function describeOffer(
+  c: Pick<Campaign, "discountType" | "discountValue" | "discountBase" | "maxDiscountAmount" | "minBillAmount">,
+) {
   const on = c.discountType === "PERCENTAGE" && c.discountBase === "MAKING_CHARGES" ? " on making" : "";
   const cap = c.maxDiscountAmount ? `, up to ${inrShort(c.maxDiscountAmount)}` : "";
   const min = c.minBillAmount ? `, on bills above ${inrShort(c.minBillAmount)}` : "";

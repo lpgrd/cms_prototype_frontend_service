@@ -2,14 +2,42 @@
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
-import { BadgePercent, Calculator, Gem, MessageSquareText, Plus, ScanLine, ShieldCheck, Trash2, UserCheck, UserPlus, UserRound, X } from "lucide-react";
+import {
+  BadgePercent,
+  Calculator,
+  Gem,
+  MessageSquareText,
+  Plus,
+  ScanLine,
+  ShieldCheck,
+  Trash2,
+  UserCheck,
+  UserPlus,
+  UserRound,
+  X,
+} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { QrScannerModal } from "@/components/qr-scanner";
-import { Alert, Badge, Button, Card, Checkbox, Field, FormDatePicker, FormSelect, InlineLoading, Input, MaskedInput, PageHeader, RequiredNote, Textarea } from "@/components/ui";
+import {
+  Alert,
+  Badge,
+  Button,
+  Card,
+  Checkbox,
+  Field,
+  FormDatePicker,
+  FormSelect,
+  InlineLoading,
+  Input,
+  MaskedInput,
+  PageHeader,
+  RequiredNote,
+  Textarea,
+} from "@/components/ui";
 import { api, errorMessage } from "@/lib/api";
 import { codeFromScan } from "@/lib/partner-code";
 import { date, inr, inrShort, plural, points } from "@/lib/format";
@@ -219,7 +247,11 @@ export default function BillingPage() {
     if (values.split) {
       const paid = paidSoFar(values.payments);
       if (totals && Math.abs(paid - totals.grandTotal) >= 0.005) {
-        return toast.error(paid < totals.grandTotal ? `${inr(totals.grandTotal - paid)} still to collect` : `Payments are ${inr(paid - totals.grandTotal)} more than the bill`);
+        return toast.error(
+          paid < totals.grandTotal
+            ? `${inr(totals.grandTotal - paid)} still to collect`
+            : `Payments are ${inr(paid - totals.grandTotal)} more than the bill`,
+        );
       }
     }
     if (issues.length) return toast.error(issues[0].message);
@@ -258,7 +290,8 @@ export default function BillingPage() {
                     <div className="min-w-0">
                       <div className="truncate font-medium text-foreground">{existing.name}</div>
                       <div className="text-xs text-muted-foreground">
-                        {plural(existing.purchaseCount, "purchase")}, {inrShort(existing.totalSpend)} spent, last on {date(existing.lastPurchaseAt)}
+                        {plural(existing.purchaseCount, "purchase")}, {inrShort(existing.totalSpend)} spent, last on{" "}
+                        {date(existing.lastPurchaseAt)}
                       </div>
                     </div>
                     <div className="ml-auto flex shrink-0 items-center gap-1">
@@ -307,7 +340,8 @@ export default function BillingPage() {
                   </Field>
                 ) : existing?.panNumber ? (
                   <p className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <ShieldCheck className="size-4 text-primary" /> PAN on file ({existing.panNumber.slice(0, 2)}•••••{existing.panNumber.slice(-3)})
+                    <ShieldCheck className="size-4 text-primary" /> PAN on file ({existing.panNumber.slice(0, 2)}•••••
+                    {existing.panNumber.slice(-3)})
                   </p>
                 ) : (
                   <div />
@@ -333,11 +367,11 @@ export default function BillingPage() {
           <Card title="Partner offer" icon={BadgePercent}>
             <div className="flex gap-2">
               <Input
-                  placeholder="Scan QR or type code"
-                  className="font-mono"
-                  // USB scanners type the whole QR link into the field; keep just the code.
-                  {...register("code", { onChange: (e) => setValue("code", codeFromScan(e.target.value)) })}
-                />
+                placeholder="Scan QR or type code"
+                className="font-mono"
+                // USB scanners type the whole QR link into the field; keep just the code.
+                {...register("code", { onChange: (e) => setValue("code", codeFromScan(e.target.value)) })}
+              />
               <Button type="button" variant="secondary" icon={<ScanLine className="size-4" />} onClick={() => setScanOpen(true)}>
                 Scan
               </Button>
@@ -347,7 +381,9 @@ export default function BillingPage() {
                 </Button>
               )}
             </div>
-            {code && !mobileValid && <p className="mt-2 text-xs text-muted-foreground">Enter the customer&apos;s mobile to validate the code.</p>}
+            {code && !mobileValid && (
+              <p className="mt-2 text-xs text-muted-foreground">Enter the customer&apos;s mobile to validate the code.</p>
+            )}
             {offer && (
               <div className="mt-3 flex items-start gap-3 rounded-lg border border-primary/30 bg-primary/5 px-4 py-3">
                 <BadgePercent className="mt-0.5 size-4 text-primary" />
@@ -394,7 +430,8 @@ export default function BillingPage() {
 
           {/* Items */}
           <Card
-            title="Items" icon={Gem}
+            title="Items"
+            icon={Gem}
             actions={
               <Button type="button" size="sm" variant="secondary" icon={<Plus className="size-4" />} onClick={addItem}>
                 Add item
@@ -432,12 +469,7 @@ export default function BillingPage() {
                         <Input placeholder="22K" {...register(`items.${index}.purity`)} />
                       </Field>
                       <Field label="HUID" hint={watched.items?.[index]?.metalType === "GOLD" ? "Hallmark ID" : undefined}>
-                        <MaskedInput
-                          mask="huid"
-                          placeholder="AB12CD"
-                          aria-invalid={!!itemIssue}
-                          {...register(`items.${index}.huid`)}
-                        />
+                        <MaskedInput mask="huid" placeholder="AB12CD" aria-invalid={!!itemIssue} {...register(`items.${index}.huid`)} />
                       </Field>
                       <Field label="Gross wt (g)">
                         <Input type="number" step="0.001" min="0" {...register(`items.${index}.grossWeight`, { valueAsNumber: true })} />
@@ -487,7 +519,10 @@ export default function BillingPage() {
         {/* Summary */}
         <div id="bill-summary" className="scroll-mt-16 xl:sticky xl:top-16 xl:self-start">
           <Card title="Summary" icon={Calculator} actions={preview.isFetching ? <InlineLoading>Updating…</InlineLoading> : undefined}>
-            <dl className={clsx("tabular space-y-2 text-sm transition-opacity", preview.isFetching && "opacity-50")} aria-busy={preview.isFetching}>
+            <dl
+              className={clsx("tabular space-y-2 text-sm transition-opacity", preview.isFetching && "opacity-50")}
+              aria-busy={preview.isFetching}
+            >
               <Row label="Subtotal" value={inr(totals?.subtotal)} />
               <Row label="Making charges" value={inr(totals?.makingChargesTotal)} muted />
               <Row

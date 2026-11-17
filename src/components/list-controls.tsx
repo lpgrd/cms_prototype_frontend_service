@@ -1,7 +1,18 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, ChevronsUpDown, type LucideIcon, Search, SearchX, SlidersHorizontal, X } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsUpDown,
+  type LucideIcon,
+  Search,
+  SearchX,
+  SlidersHorizontal,
+  X,
+} from "lucide-react";
 import { ReactNode, useEffect, useState } from "react";
 import { Combobox, ComboboxContent, ComboboxEmpty, ComboboxInput, ComboboxItem, ComboboxList } from "@/components/ui/combobox";
 import { Input } from "@/components/ui/input";
@@ -34,7 +45,7 @@ export function FilterBar({
     <div className="flex flex-wrap items-center gap-2 border-b border-border p-4">
       {placeholder && (
         <div className="relative min-w-0 flex-1 sm:min-w-64">
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="search"
             aria-label="Search"
@@ -53,12 +64,19 @@ export function FilterBar({
           aria-expanded={open}
           onClick={() => setOpen((o) => !o)}
         >
-          Filters{filterCount > 0 && <span className="tabular rounded-full bg-primary px-1.5 text-xs text-primary-foreground">{filterCount}</span>}
+          Filters
+          {filterCount > 0 && <span className="tabular rounded-full bg-primary px-1.5 text-xs text-primary-foreground">{filterCount}</span>}
         </Button>
       )}
       <div className={cn("w-full flex-col gap-2 *:w-full sm:contents sm:*:w-auto", open ? "flex" : "hidden")}>{children}</div>
       {list.activeFilters > 0 && (
-        <Button variant="ghost" size="sm" className={cn(!open && "max-sm:hidden")} icon={<X className="size-4" />} onClick={list.clearFilters}>
+        <Button
+          variant="ghost"
+          size="sm"
+          className={cn(!open && "max-sm:hidden")}
+          icon={<X className="size-4" />}
+          onClick={list.clearFilters}
+        >
           Clear filters
         </Button>
       )}
@@ -92,7 +110,11 @@ export function ListEmpty({
         icon={SearchX}
         title={`No ${noun} match these filters`}
         description="Try a different search, or clear the filters to see everything."
-        action={<Button variant="secondary" onClick={list.clearFilters}>Clear filters</Button>}
+        action={
+          <Button variant="secondary" onClick={list.clearFilters}>
+            Clear filters
+          </Button>
+        }
       />
     );
   }
@@ -164,9 +186,21 @@ export function DateRangeFilter({ from, to, onChange }: { from: string; to: stri
       />
       {preset === "custom" && (
         <div className="flex items-center gap-1 sm:w-auto">
-          <DatePicker className="sm:w-40" placeholder="From" value={from} onChange={(v) => onChange(v, to && v > to ? v : to)} toYear={new Date().getFullYear()} />
+          <DatePicker
+            className="sm:w-40"
+            placeholder="From"
+            value={from}
+            onChange={(v) => onChange(v, to && v > to ? v : to)}
+            toYear={new Date().getFullYear()}
+          />
           <span className="text-muted-foreground">to</span>
-          <DatePicker className="sm:w-40" placeholder="To" value={to} onChange={(v) => onChange(from && v && v < from ? v : from, v)} toYear={new Date().getFullYear()} />
+          <DatePicker
+            className="sm:w-40"
+            placeholder="To"
+            value={to}
+            onChange={(v) => onChange(from && v && v < from ? v : from, v)}
+            toYear={new Date().getFullYear()}
+          />
         </div>
       )}
     </>
@@ -338,10 +372,16 @@ export function Pagination({
   }
 
   return (
-    <nav aria-label="Pagination" className="flex flex-col gap-3 px-4 py-3 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+    <nav
+      aria-label="Pagination"
+      className="flex flex-col gap-3 px-4 py-3 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between"
+    >
       <span aria-live="polite">
-        Showing <span className="tabular text-foreground">{(page - 1) * limit + 1}–{Math.min(page * limit, total)}</span> of{" "}
-        <span className="tabular text-foreground">{plural(total, noun)}</span>
+        Showing{" "}
+        <span className="tabular text-foreground">
+          {(page - 1) * limit + 1}–{Math.min(page * limit, total)}
+        </span>{" "}
+        of <span className="tabular text-foreground">{plural(total, noun)}</span>
       </span>
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         {onLimitChange && (
@@ -390,6 +430,14 @@ export function Pagination({
 }
 
 /** Pagination wired to a list's URL state. */
-export function ListPagination({ list, total, noun }: { list: Pick<ListState, "page" | "limit" | "setPage" | "setLimit">; total: number; noun?: string }) {
+export function ListPagination({
+  list,
+  total,
+  noun,
+}: {
+  list: Pick<ListState, "page" | "limit" | "setPage" | "setLimit">;
+  total: number;
+  noun?: string;
+}) {
   return <Pagination page={list.page} limit={list.limit} total={total} onChange={list.setPage} onLimitChange={list.setLimit} noun={noun} />;
 }

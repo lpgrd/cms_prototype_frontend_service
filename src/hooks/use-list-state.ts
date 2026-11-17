@@ -51,7 +51,12 @@ export function useListState<F extends string = never>({
   const defaultsKey = JSON.stringify(defaults);
   const filters = useMemo(() => {
     const d = JSON.parse(defaultsKey) as Record<string, string>;
-    return Object.fromEntries(keysKey.split(",").filter(Boolean).map((k) => [k, params.get(k) ?? d[k] ?? ""])) as Record<F, string>;
+    return Object.fromEntries(
+      keysKey
+        .split(",")
+        .filter(Boolean)
+        .map((k) => [k, params.get(k) ?? d[k] ?? ""]),
+    ) as Record<F, string>;
   }, [keysKey, defaultsKey, params]);
   const defaultOf = (k: string) => (defaults as Record<string, string | undefined>)[k] ?? "";
 

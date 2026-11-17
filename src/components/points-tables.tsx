@@ -27,7 +27,12 @@ export function LedgerTable({ endpoint }: { endpoint: string }) {
     placeholderData: keepPreviousData,
   });
   if (isLoading) return <TableSkeleton />;
-  if (error || !data) return <div className="p-4"><ErrorState error={error} /></div>;
+  if (error || !data)
+    return (
+      <div className="p-4">
+        <ErrorState error={error} />
+      </div>
+    );
   if (!data.items.length) return <Empty icon={History} title="No points activity yet" />;
 
   return (
@@ -91,14 +96,18 @@ export function PayoutsTable({ payouts, actions }: { payouts: Payout[]; actions?
             </Td>
             <Td className={clsx(HIDE_BELOW.sm, "tabular text-right")}>{number(p.points)}</Td>
             <Td className={clsx(HIDE_BELOW.lg, "tabular text-right")}>{inr(p.grossAmount)}</Td>
-            <Td className={clsx(HIDE_BELOW.lg, "tabular text-right text-muted-foreground")}>{p.tdsAmount ? `${inr(p.tdsAmount)} (${p.tdsRate}%)` : "—"}</Td>
+            <Td className={clsx(HIDE_BELOW.lg, "tabular text-right text-muted-foreground")}>
+              {p.tdsAmount ? `${inr(p.tdsAmount)} (${p.tdsRate}%)` : "—"}
+            </Td>
             <Td className="tabular text-right font-medium whitespace-nowrap">
               {inr(p.amount)}
               {p.tdsAmount > 0 && <div className="text-xs font-normal text-muted-foreground lg:hidden">after {inr(p.tdsAmount)} TDS</div>}
             </Td>
             <Td>
               <StatusBadge status={p.status} />
-              {p.status === "REJECTED" && p.rejectionReason && <div className="mt-1 max-w-48 text-xs text-muted-foreground md:hidden">{p.rejectionReason}</div>}
+              {p.status === "REJECTED" && p.rejectionReason && (
+                <div className="mt-1 max-w-48 text-xs text-muted-foreground md:hidden">{p.rejectionReason}</div>
+              )}
             </Td>
             <Td className={clsx(HIDE_BELOW.md, "text-xs text-muted-foreground")}>
               {p.status === "PAID" && `Paid by ${p.paymentMode?.replace("_", " ")} on ${date(p.paidAt)}, ref ${p.paymentReference}`}

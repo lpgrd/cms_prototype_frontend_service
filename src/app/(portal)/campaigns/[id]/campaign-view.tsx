@@ -1,13 +1,48 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Coins, Pause, Percent, Play, QrCode, Settings2, Sparkles, CircleStop, TicketCheck, TrendingUp, UserPlus, UserX } from "lucide-react";
+import {
+  Coins,
+  Pause,
+  Percent,
+  Play,
+  QrCode,
+  Settings2,
+  Sparkles,
+  CircleStop,
+  TicketCheck,
+  TrendingUp,
+  UserPlus,
+  UserX,
+} from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { QrShareModal } from "@/components/qr-share-modal";
-import { Alert, Badge, Button, Card, Checkbox, ConfirmDialog, Empty, ErrorState, Field, HIDE_BELOW, Input, Modal, PageHeader, PageSkeleton, SelectInput, Stat, StatusBadge, Table, TableSkeleton, Td, Th } from "@/components/ui";
+import {
+  Alert,
+  Badge,
+  Button,
+  Card,
+  Checkbox,
+  ConfirmDialog,
+  Empty,
+  ErrorState,
+  Field,
+  HIDE_BELOW,
+  Input,
+  Modal,
+  PageHeader,
+  PageSkeleton,
+  SelectInput,
+  Stat,
+  StatusBadge,
+  Table,
+  TableSkeleton,
+  Td,
+  Th,
+} from "@/components/ui";
 import { api, errorMessage } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { dateTime, inrShort, number, points } from "@/lib/format";
@@ -47,7 +82,11 @@ export function CampaignView() {
   const [disableCode, setDisableCode] = useState<Row | null>(null);
   const toggleEnrollment = useMutation({
     mutationFn: (row: Row) => api.patch(`/campaigns/${id}/influencers/${row.id}`, { isActive: !row.isActive }),
-    onSuccess: (_, row) => (refresh(), setDisableCode(null), toast.success(row.isActive ? `${row.code} disabled` : `${row.code} works again`)),
+    onSuccess: (_, row) => (
+      refresh(),
+      setDisableCode(null),
+      toast.success(row.isActive ? `${row.code} disabled` : `${row.code} works again`)
+    ),
     onError: (err) => toast.error(errorMessage(err)),
   });
 
@@ -82,7 +121,12 @@ export function CampaignView() {
                 {editing ? "Close editor" : "Edit"}
               </Button>
               {c.status === "ACTIVE" ? (
-                <Button variant="secondary" icon={<Pause className="size-4" />} loading={setStatus.isPending} onClick={() => setStatus.mutate("PAUSED")}>
+                <Button
+                  variant="secondary"
+                  icon={<Pause className="size-4" />}
+                  loading={setStatus.isPending}
+                  onClick={() => setStatus.mutate("PAUSED")}
+                >
                   Pause
                 </Button>
               ) : (
@@ -99,13 +143,21 @@ export function CampaignView() {
       />
 
       {c.effectiveStatus === "SCHEDULED" && (
-        <div className="mb-4"><Alert tone="info">Active, starts {dateTime(c.startsAt)}. Codes will be accepted from then.</Alert></div>
+        <div className="mb-4">
+          <Alert tone="info">Active, starts {dateTime(c.startsAt)}. Codes will be accepted from then.</Alert>
+        </div>
       )}
       {c.effectiveStatus === "EXPIRED" && (
-        <div className="mb-4"><Alert tone="warning">The end date ({dateTime(c.endsAt)}) has passed, so codes are no longer accepted.</Alert></div>
+        <div className="mb-4">
+          <Alert tone="warning">The end date ({dateTime(c.endsAt)}) has passed, so codes are no longer accepted.</Alert>
+        </div>
       )}
       {c.status === "DRAFT" && (
-        <div className="mb-4"><Alert tone="info">Draft: add partners and share their QR codes, then activate the campaign. Codes are only accepted while it is active.</Alert></div>
+        <div className="mb-4">
+          <Alert tone="info">
+            Draft: add partners and share their QR codes, then activate the campaign. Codes are only accepted while it is active.
+          </Alert>
+        </div>
       )}
 
       {editing && (
@@ -116,7 +168,11 @@ export function CampaignView() {
             submitting={update.isPending}
             error={update.error}
             submitLabel="Save changes"
-            secondaryAction={<Button type="button" variant="secondary" onClick={() => setEditing(false)}>Cancel</Button>}
+            secondaryAction={
+              <Button type="button" variant="secondary" onClick={() => setEditing(false)}>
+                Cancel
+              </Button>
+            }
           />
         </div>
       )}
@@ -162,7 +218,9 @@ export function CampaignView() {
                 return (
                   <tr key={row.id}>
                     <Td>
-                      <Link href={`/partners/${row.influencerId}`} className="font-medium hover:text-primary">{row.influencer.name}</Link>
+                      <Link href={`/partners/${row.influencerId}`} className="font-medium hover:text-primary">
+                        {row.influencer.name}
+                      </Link>
                       <div className="text-xs text-muted-foreground">
                         {row.influencer.instagramHandle ? `@${row.influencer.instagramHandle}` : ""}
                         {overridden && <Badge tone="info">Custom rates</Badge>}
@@ -187,9 +245,13 @@ export function CampaignView() {
                     </Td>
                     <Td className="text-right">
                       <div className="flex justify-end gap-1">
-                        <Button size="sm" variant="ghost" icon={<QrCode className="size-4" />} onClick={() => setQrFor(row)}>QR</Button>
+                        <Button size="sm" variant="ghost" icon={<QrCode className="size-4" />} onClick={() => setQrFor(row)}>
+                          QR
+                        </Button>
                         {manage && (
-                          <Button size="sm" variant="ghost" onClick={() => setOverridesFor(row)}>Rates</Button>
+                          <Button size="sm" variant="ghost" onClick={() => setOverridesFor(row)}>
+                            Rates
+                          </Button>
                         )}
                       </div>
                     </Td>
@@ -217,9 +279,7 @@ export function CampaignView() {
           fileName={`${c.name}-${qrFor.influencer.name}-${qrFor.code}`.replace(/\s+/g, "-")}
         />
       )}
-      {overridesFor && (
-        <OverridesModal row={overridesFor} campaignId={id} onClose={() => setOverridesFor(null)} onDone={refresh} />
-      )}
+      {overridesFor && <OverridesModal row={overridesFor} campaignId={id} onClose={() => setOverridesFor(null)} onDone={refresh} />}
       <ConfirmDialog
         open={confirmEnd}
         onClose={() => setConfirmEnd(false)}
@@ -281,8 +341,12 @@ function EnrollModal({
       title="Add partner"
       footer={
         <>
-          <Button variant="secondary" onClick={onClose}>Cancel</Button>
-          <Button disabled={!influencerId} loading={enroll.isPending} onClick={() => enroll.mutate()}>Add & create code</Button>
+          <Button variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button disabled={!influencerId} loading={enroll.isPending} onClick={() => enroll.mutate()}>
+            Add & create code
+          </Button>
         </>
       }
     >
@@ -291,7 +355,10 @@ function EnrollModal({
       ) : options.length === 0 ? (
         <p className="text-sm text-muted-foreground">
           Every active partner is already in this campaign.{" "}
-          <Link href="/partners" className="text-primary underline">Add a new partner</Link> first.
+          <Link href="/partners" className="text-primary underline">
+            Add a new partner
+          </Link>{" "}
+          first.
         </p>
       ) : (
         <div className="space-y-4">
@@ -307,7 +374,9 @@ function EnrollModal({
               }))}
             />
           </Field>
-          <p className="text-xs text-muted-foreground">A unique code and QR are generated. You can set custom rates for this partner afterwards.</p>
+          <p className="text-xs text-muted-foreground">
+            A unique code and QR are generated. You can set custom rates for this partner afterwards.
+          </p>
         </div>
       )}
     </Modal>
@@ -342,8 +411,12 @@ function OverridesModal({ row, campaignId, onClose, onDone }: { row: Row; campai
       title={`Rates for ${row.influencer.name}`}
       footer={
         <>
-          <Button variant="secondary" onClick={onClose}>Cancel</Button>
-          <Button loading={save.isPending} onClick={() => save.mutate()}>Save</Button>
+          <Button variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button loading={save.isPending} onClick={() => save.mutate()}>
+            Save
+          </Button>
         </>
       }
     >

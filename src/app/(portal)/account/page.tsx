@@ -4,7 +4,19 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Copy, IdCard, LockKeyhole, ShieldCheck, ShieldOff } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Alert, Badge, Button, Card, ConfirmDialog, DefinitionList, Field, MaskedInput, Modal, PageHeader, PasswordInput } from "@/components/ui";
+import {
+  Alert,
+  Badge,
+  Button,
+  Card,
+  ConfirmDialog,
+  DefinitionList,
+  Field,
+  MaskedInput,
+  Modal,
+  PageHeader,
+  PasswordInput,
+} from "@/components/ui";
 import { api, errorMessage } from "@/lib/api";
 import { date } from "@/lib/format";
 import { ME_KEY, roleLabel, useMe } from "@/providers/auth";
@@ -118,7 +130,8 @@ function TwoFactorCard({ enabled, privileged }: { enabled: boolean; privileged: 
 
   return (
     <Card
-      title="Two-step verification" icon={ShieldCheck}
+      title="Two-step verification"
+      icon={ShieldCheck}
       actions={enabled ? <Badge tone="success">On</Badge> : <Badge tone="warning">Off</Badge>}
     >
       {!enabled && !setup && (
@@ -126,7 +139,9 @@ function TwoFactorCard({ enabled, privileged }: { enabled: boolean; privileged: 
           <p className="text-sm text-muted-foreground">
             Sign-in will also ask for a code from an authenticator app (Google Authenticator, Microsoft Authenticator, 1Password…).
           </p>
-          {privileged && <Alert tone="warning">Your role can manage other people&apos;s access, so we strongly recommend turning this on.</Alert>}
+          {privileged && (
+            <Alert tone="warning">Your role can manage other people&apos;s access, so we strongly recommend turning this on.</Alert>
+          )}
           <Button icon={<ShieldCheck />} loading={begin.isPending} onClick={() => begin.mutate()}>
             Set up two-step verification
           </Button>
@@ -142,11 +157,20 @@ function TwoFactorCard({ enabled, privileged }: { enabled: boolean; privileged: 
           {/* eslint-disable-next-line @next/next/no-img-element -- data URL */}
           <img src={setup.qrDataUrl} alt="Authenticator QR code" className="size-44 rounded-lg border border-border bg-white p-1" />
           <p className="text-xs text-muted-foreground">
-            Can&apos;t scan? Enter this key manually: <span className="break-all font-mono">{setup.secret}</span>
+            Can&apos;t scan? Enter this key manually: <span className="font-mono break-all">{setup.secret}</span>
           </p>
           {enable.isError && <Alert tone="danger">{errorMessage(enable.error)}</Alert>}
           <div className="flex gap-2">
-            <MaskedInput mask="digits" maxLength={6} aria-label="6-digit code" autoComplete="one-time-code" placeholder="123456" className="tracking-widest" value={code} onChange={(e) => setCode(e.target.value)} />
+            <MaskedInput
+              mask="digits"
+              maxLength={6}
+              aria-label="6-digit code"
+              autoComplete="one-time-code"
+              placeholder="123456"
+              className="tracking-widest"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+            />
             <Button loading={enable.isPending} disabled={code.length !== 6} onClick={() => enable.mutate()}>
               Confirm
             </Button>
@@ -177,7 +201,9 @@ function TwoFactorCard({ enabled, privileged }: { enabled: boolean; privileged: 
             Each code signs you in once if you lose your phone. They won&apos;t be shown again, so store them somewhere safe.
           </p>
           <div className="grid grid-cols-2 gap-2 rounded-lg bg-muted p-4 font-mono">
-            {recoveryCodes?.map((c) => <span key={c}>{c}</span>)}
+            {recoveryCodes?.map((c) => (
+              <span key={c}>{c}</span>
+            ))}
           </div>
           <Button
             variant="secondary"

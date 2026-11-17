@@ -4,7 +4,21 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Lock, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Alert, Badge, Button, Card, Checkbox, ConfirmDialog, ErrorState, Field, Input, Modal, PageHeader, PageSkeleton, Textarea } from "@/components/ui";
+import {
+  Alert,
+  Badge,
+  Button,
+  Card,
+  Checkbox,
+  ConfirmDialog,
+  ErrorState,
+  Field,
+  Input,
+  Modal,
+  PageHeader,
+  PageSkeleton,
+  Textarea,
+} from "@/components/ui";
 import { api, errorMessage } from "@/lib/api";
 import type { Permission, PermissionGroup, Role } from "@/lib/types";
 import { useMe } from "@/providers/auth";
@@ -19,7 +33,11 @@ export default function RolesPage() {
   const [editing, setEditing] = useState<Role | "new" | null>(null);
 
   const roles = useQuery({ queryKey: ["roles"], queryFn: () => api.get<Role[]>("/roles") });
-  const catalog = useQuery({ queryKey: ["permission-catalog"], queryFn: () => api.get<PermissionGroup[]>("/roles/permissions"), staleTime: Infinity });
+  const catalog = useQuery({
+    queryKey: ["permission-catalog"],
+    queryFn: () => api.get<PermissionGroup[]>("/roles/permissions"),
+    staleTime: Infinity,
+  });
 
   if (roles.isLoading || catalog.isLoading) return <PageSkeleton />;
   if (roles.error || catalog.error || !roles.data || !catalog.data) return <ErrorState error={roles.error ?? catalog.error} />;
@@ -35,7 +53,13 @@ export default function RolesPage() {
             ? "Create roles from permissions and share dashboard widgets. Changes apply to everyone with the role immediately."
             : "What each role can do. Only a superadmin can change roles."
         }
-        actions={isSuperadmin && <Button icon={<Plus className="size-4" />} onClick={() => setEditing("new")}>New role</Button>}
+        actions={
+          isSuperadmin && (
+            <Button icon={<Plus className="size-4" />} onClick={() => setEditing("new")}>
+              New role
+            </Button>
+          )
+        }
       />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -62,7 +86,9 @@ export default function RolesPage() {
           >
             {role.description && <p className="text-sm text-muted-foreground">{role.description}</p>}
             <div className="mt-3 flex flex-wrap gap-2 text-xs text-muted-foreground">
-              <span>{role.userCount ?? 0} {role.userCount === 1 ? "user" : "users"},</span>
+              <span>
+                {role.userCount ?? 0} {role.userCount === 1 ? "user" : "users"},
+              </span>
               <span>
                 {role.isSuperadmin ? "All" : role.permissions.length} of {total} permissions
               </span>
@@ -70,7 +96,9 @@ export default function RolesPage() {
             {!role.isSuperadmin && (
               <div className="mt-3 flex flex-wrap gap-1">
                 {role.permissions.slice(0, 6).map((p) => (
-                  <Badge key={p} tone="neutral">{labelOf.get(p) ?? p}</Badge>
+                  <Badge key={p} tone="neutral">
+                    {labelOf.get(p) ?? p}
+                  </Badge>
                 ))}
                 {role.permissions.length > 6 && <Badge tone="neutral">+{role.permissions.length - 6} more</Badge>}
               </div>
@@ -150,7 +178,9 @@ function RoleEditor({
       wide
       footer={
         readOnly ? (
-          <Button variant="secondary" onClick={onClose}>Close</Button>
+          <Button variant="secondary" onClick={onClose}>
+            Close
+          </Button>
         ) : (
           <div className="flex w-full items-center justify-between gap-2">
             {role && !role.isSystem ? (
@@ -161,7 +191,9 @@ function RoleEditor({
               <span />
             )}
             <div className="flex gap-2">
-              <Button variant="secondary" onClick={onClose}>Cancel</Button>
+              <Button variant="secondary" onClick={onClose}>
+                Cancel
+              </Button>
               <Button loading={save.isPending} disabled={name.trim().length < 2} onClick={() => save.mutate()}>
                 {role ? "Save role" : "Create role"}
               </Button>
@@ -172,7 +204,9 @@ function RoleEditor({
     >
       <div className="space-y-5">
         {(save.isError || remove.isError) && <Alert tone="danger">{errorMessage(save.error ?? remove.error)}</Alert>}
-        {role?.isSuperadmin && <Alert tone="info">Superadmin always has every permission, including ones added in future. It can&apos;t be edited.</Alert>}
+        {role?.isSuperadmin && (
+          <Alert tone="info">Superadmin always has every permission, including ones added in future. It can&apos;t be edited.</Alert>
+        )}
         {!role?.isSuperadmin && (
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Name" required={!readOnly}>
@@ -189,9 +223,16 @@ function RoleEditor({
             const keys = group.permissions.map((p) => p.key);
             const all = keys.every((k) => selected.has(k));
             return (
-              <section key={group.group} role="group" aria-labelledby={`perm-${group.group}`} className="rounded-lg border border-border p-4">
+              <section
+                key={group.group}
+                role="group"
+                aria-labelledby={`perm-${group.group}`}
+                className="rounded-lg border border-border p-4"
+              >
                 <div className="mb-3 flex items-center justify-between gap-2">
-                  <h3 id={`perm-${group.group}`} className="text-sm font-semibold">{group.group === "Dashboard" ? "Dashboard sharing" : group.group}</h3>
+                  <h3 id={`perm-${group.group}`} className="text-sm font-semibold">
+                    {group.group === "Dashboard" ? "Dashboard sharing" : group.group}
+                  </h3>
                   {!readOnly && (
                     <button type="button" className="text-xs text-primary hover:underline" onClick={() => toggleGroup(group, !all)}>
                       {all ? "Clear all" : "Select all"}
@@ -201,7 +242,13 @@ function RoleEditor({
                 {GROUP_HINTS[group.group] && <p className="mb-3 text-xs text-muted-foreground">{GROUP_HINTS[group.group]}</p>}
                 <div className="grid gap-2 sm:grid-cols-2">
                   {group.permissions.map((p) => (
-                    <Checkbox key={p.key} label={p.label} checked={selected.has(p.key)} disabled={readOnly} onCheckedChange={(on) => toggle(p.key, on)} />
+                    <Checkbox
+                      key={p.key}
+                      label={p.label}
+                      checked={selected.has(p.key)}
+                      disabled={readOnly}
+                      onCheckedChange={(on) => toggle(p.key, on)}
+                    />
                   ))}
                 </div>
               </section>

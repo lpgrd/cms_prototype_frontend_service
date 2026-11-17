@@ -92,27 +92,41 @@ export default function CustomersPage() {
         {isLoading ? (
           <TableSkeleton />
         ) : error ? (
-          <div className="p-4"><ErrorState error={error} /></div>
+          <div className="p-4">
+            <ErrorState error={error} />
+          </div>
         ) : !data?.items.length ? (
-          <ListEmpty list={list} noun="customers" icon={Users} title="No customers yet" description="Customers are added automatically when they're billed, or you can add one." />
+          <ListEmpty
+            list={list}
+            noun="customers"
+            icon={Users}
+            title="No customers yet"
+            description="Customers are added automatically when they're billed, or you can add one."
+          />
         ) : (
           <div className={isFetching ? "opacity-60 transition-opacity" : "transition-opacity"} aria-busy={isFetching}>
             <Table>
               <thead>
                 <tr>
-                  <SortableTh column="name" sort={list.sort} onSort={list.toggleSort}>Customer</SortableTh>
+                  <SortableTh column="name" sort={list.sort} onSort={list.toggleSort}>
+                    Customer
+                  </SortableTh>
                   <Th className={HIDE_BELOW.lg}>Email</Th>
                   <Th className={HIDE_BELOW.md}>City</Th>
                   <Th className={HIDE_BELOW.sm}>Source</Th>
                   <Th className={HIDE_BELOW.lg}>Tags</Th>
-                  <SortableTh column="createdAt" sort={list.sort} onSort={list.toggleSort} firstDir="DESC" className={HIDE_BELOW.md}>Added</SortableTh>
+                  <SortableTh column="createdAt" sort={list.sort} onSort={list.toggleSort} firstDir="DESC" className={HIDE_BELOW.md}>
+                    Added
+                  </SortableTh>
                 </tr>
               </thead>
               <tbody>
                 {data.items.map((c) => (
                   <tr key={c.id}>
                     <Td>
-                      <Link href={`/customers/${c.id}`} className="font-medium hover:text-primary">{c.name}</Link>
+                      <Link href={`/customers/${c.id}`} className="font-medium hover:text-primary">
+                        {c.name}
+                      </Link>
                       <div className="text-xs text-muted-foreground">{mobile(c.mobile)}</div>
                     </Td>
                     <Td className={cn(HIDE_BELOW.lg, "max-w-56 truncate text-muted-foreground")}>{c.email ?? "—"}</Td>
@@ -126,7 +140,15 @@ export default function CustomersPage() {
                     </Td>
                     <Td className={HIDE_BELOW.lg}>
                       <div className="flex flex-wrap gap-1">
-                        {c.tags.length ? c.tags.map((t) => <Badge key={t} tone="info">{t}</Badge>) : <span className="text-muted-foreground">—</span>}
+                        {c.tags.length ? (
+                          c.tags.map((t) => (
+                            <Badge key={t} tone="info">
+                              {t}
+                            </Badge>
+                          ))
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
+                        )}
                       </div>
                     </Td>
                     <Td className={cn(HIDE_BELOW.md, "whitespace-nowrap text-muted-foreground")}>{date(c.createdAt)}</Td>

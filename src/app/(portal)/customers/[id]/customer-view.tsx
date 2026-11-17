@@ -2,11 +2,45 @@
 
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { BadgePercent, Cake, CalendarClock, CreditCard, Download, Gem, HandCoins, Heart, IdCard, IndianRupee, MailCheck, Receipt, ReceiptText, ShoppingBag, XCircle } from "lucide-react";
+import {
+  BadgePercent,
+  Cake,
+  CalendarClock,
+  CreditCard,
+  Download,
+  Gem,
+  HandCoins,
+  Heart,
+  IdCard,
+  IndianRupee,
+  MailCheck,
+  Receipt,
+  ReceiptText,
+  ShoppingBag,
+  XCircle,
+} from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Badge, Button, Card, Checkbox, DefinitionList, Empty, ErrorState, HIDE_BELOW, PageHeader, PageSkeleton, SecretValue, Stat, StatusBadge, Table, TableSkeleton, Td, Th } from "@/components/ui";
+import {
+  Badge,
+  Button,
+  Card,
+  Checkbox,
+  DefinitionList,
+  Empty,
+  ErrorState,
+  HIDE_BELOW,
+  PageHeader,
+  PageSkeleton,
+  SecretValue,
+  Stat,
+  StatusBadge,
+  Table,
+  TableSkeleton,
+  Td,
+  Th,
+} from "@/components/ui";
 import { Pagination } from "@/components/list-controls";
 import { api, errorMessage } from "@/lib/api";
 import { cn } from "@/lib/utils";
@@ -55,14 +89,20 @@ export function CustomerView() {
               <Badge>{sourceLabel(c.source)}</Badge>
             )}
             {c.tags.map((t) => (
-              <Badge key={t} tone="info">{t}</Badge>
+              <Badge key={t} tone="info">
+                {t}
+              </Badge>
             ))}
           </span>
         }
         actions={
           <>
             {can("customers.export") && (
-              <Button variant="secondary" icon={<Download className="size-4" />} onClick={() => window.open(`/api/customers/${c.id}/export`, "_blank")}>
+              <Button
+                variant="secondary"
+                icon={<Download className="size-4" />}
+                onClick={() => window.open(`/api/customers/${c.id}/export`, "_blank")}
+              >
                 Export data
               </Button>
             )}
@@ -75,9 +115,19 @@ export function CustomerView() {
         <Stat icon={IndianRupee} label="Lifetime spend" value={inrShort(stats.totalSpend)} accent />
         <Stat icon={ShoppingBag} label="Purchases" value={stats.purchaseCount} />
         <Stat icon={ReceiptText} label="Average bill" value={inrShort(stats.averageBill)} />
-        <Stat icon={CalendarClock} label="Last purchase" value={date(stats.lastPurchaseAt)} sub={stats.firstPurchaseAt ? `Customer since ${date(stats.firstPurchaseAt)}` : undefined} />
+        <Stat
+          icon={CalendarClock}
+          label="Last purchase"
+          value={date(stats.lastPurchaseAt)}
+          sub={stats.firstPurchaseAt ? `Customer since ${date(stats.firstPurchaseAt)}` : undefined}
+        />
         {FULL_BILLING && <Stat icon={Gem} label="Pieces bought" value={stats.piecesBought} />}
-        <Stat icon={BadgePercent} label="Offer discounts received" value={inrShort(stats.discountReceived)} sub={plural(redemptions.filter((r) => r.status === "ACTIVE").length, "offer") + " used"} />
+        <Stat
+          icon={BadgePercent}
+          label="Offer discounts received"
+          value={inrShort(stats.discountReceived)}
+          sub={plural(redemptions.filter((r) => r.status === "ACTIVE").length, "offer") + " used"}
+        />
         {FULL_BILLING && <Stat icon={CreditCard} label="Usually pays by" value={paymentLabel(stats.usualPaymentMode)} />}
         {FULL_BILLING && <Stat icon={XCircle} label="Cancelled bills" value={stats.cancelledBills} />}
       </div>
@@ -112,12 +162,18 @@ export function CustomerView() {
                   {redemptions.map((r) => (
                     <tr key={r.id}>
                       <Td>
-                        <Link href={`/campaigns/${r.campaignId}`} className="hover:text-primary">{r.campaign.name}</Link>
+                        <Link href={`/campaigns/${r.campaignId}`} className="hover:text-primary">
+                          {r.campaign.name}
+                        </Link>
                         <div className="mt-0.5 text-xs text-muted-foreground sm:hidden">
                           {r.influencer.name}, {date(r.createdAt)}
                         </div>
                       </Td>
-                      <Td className={HIDE_BELOW.sm}><Link href={`/partners/${r.influencerId}`} className="hover:text-primary">{r.influencer.name}</Link></Td>
+                      <Td className={HIDE_BELOW.sm}>
+                        <Link href={`/partners/${r.influencerId}`} className="hover:text-primary">
+                          {r.influencer.name}
+                        </Link>
+                      </Td>
                       <Td className="tabular text-right whitespace-nowrap">
                         {inr(r.discountAmount)}
                         {r.status !== "ACTIVE" && (
@@ -127,7 +183,9 @@ export function CustomerView() {
                         )}
                       </Td>
                       <Td className={cn(HIDE_BELOW.md, "whitespace-nowrap text-muted-foreground")}>{date(r.createdAt)}</Td>
-                      <Td className={HIDE_BELOW.sm}><StatusBadge status={r.status} /></Td>
+                      <Td className={HIDE_BELOW.sm}>
+                        <StatusBadge status={r.status} />
+                      </Td>
                     </tr>
                   ))}
                 </tbody>
@@ -152,15 +210,19 @@ export function CustomerView() {
             {(c.dateOfBirth || c.anniversaryDate) && (
               <div className="mt-4 space-y-2 border-t border-border pt-4 text-sm">
                 {c.dateOfBirth && (
-                  <div className="flex items-center gap-2"><Cake className="size-4 text-primary" /> Birthday {date(c.dateOfBirth)}</div>
+                  <div className="flex items-center gap-2">
+                    <Cake className="size-4 text-primary" /> Birthday {date(c.dateOfBirth)}
+                  </div>
                 )}
                 {c.anniversaryDate && (
-                  <div className="flex items-center gap-2"><Heart className="size-4 text-primary" /> Anniversary {date(c.anniversaryDate)}</div>
+                  <div className="flex items-center gap-2">
+                    <Heart className="size-4 text-primary" /> Anniversary {date(c.anniversaryDate)}
+                  </div>
                 )}
               </div>
             )}
-            {c.address && <p className="mt-4 whitespace-pre-line border-t border-border pt-4 text-sm text-muted-foreground">{c.address}</p>}
-            {c.notes && <p className="mt-4 whitespace-pre-line border-t border-border pt-4 text-sm text-muted-foreground">{c.notes}</p>}
+            {c.address && <p className="mt-4 border-t border-border pt-4 text-sm whitespace-pre-line text-muted-foreground">{c.address}</p>}
+            {c.notes && <p className="mt-4 border-t border-border pt-4 text-sm whitespace-pre-line text-muted-foreground">{c.notes}</p>}
           </Card>
 
           <Card title="What they buy" icon={Gem}>
@@ -171,7 +233,10 @@ export function CustomerView() {
                 {stats.metalMix.map((m) => (
                   <li key={m.metalType} className="flex justify-between">
                     <span>
-                      {titleCase(m.metalType)} <span className="text-muted-foreground">{plural(m.pieces, "piece")}, {grams(m.netWeight)}</span>
+                      {titleCase(m.metalType)}{" "}
+                      <span className="text-muted-foreground">
+                        {plural(m.pieces, "piece")}, {grams(m.netWeight)}
+                      </span>
                     </span>
                     <span className="tabular font-medium">{inrShort(m.value)}</span>
                   </li>
@@ -203,7 +268,8 @@ function ConsentCard({ customer, history }: { customer: Customer; history: Custo
 
   return (
     <Card
-      title="Marketing consent" icon={MailCheck}
+      title="Marketing consent"
+      icon={MailCheck}
       actions={customer.marketingConsent ? <Badge tone="success">Opted in</Badge> : <Badge>Not opted in</Badge>}
     >
       <Checkbox
@@ -263,16 +329,22 @@ function CustomerSales({ customerId }: { customerId: string }) {
                 <tr key={s.id}>
                   <Td>
                     <div className="font-mono text-xs whitespace-nowrap">#{s.number}</div>
-                    {s.billReference && <div className="mt-0.5 text-xs whitespace-nowrap text-muted-foreground">Bill {s.billReference}</div>}
+                    {s.billReference && (
+                      <div className="mt-0.5 text-xs whitespace-nowrap text-muted-foreground">Bill {s.billReference}</div>
+                    )}
                     <div className="mt-0.5 text-xs whitespace-nowrap text-muted-foreground sm:hidden">{date(s.createdAt)}</div>
                   </Td>
                   <Td className={cn(HIDE_BELOW.sm, "whitespace-nowrap text-muted-foreground")}>{date(s.createdAt)}</Td>
-                  <Td className={HIDE_BELOW.md}><Badge tone="gold">{s.influencer?.name ?? s.code}</Badge></Td>
+                  <Td className={HIDE_BELOW.md}>
+                    <Badge tone="gold">{s.influencer?.name ?? s.code}</Badge>
+                  </Td>
                   <Td className="tabular text-right font-medium whitespace-nowrap">
                     {inr(s.finalAmount)}
                     <div className="text-xs font-normal text-muted-foreground">of {inr(s.billAmount)}</div>
                   </Td>
-                  <Td className={HIDE_BELOW.sm}><StatusBadge status={s.status} /></Td>
+                  <Td className={HIDE_BELOW.sm}>
+                    <StatusBadge status={s.status} />
+                  </Td>
                 </tr>
               ))}
             </tbody>
@@ -320,11 +392,19 @@ function CustomerBills({ customerId }: { customerId: string }) {
               {data.items.map((t) => (
                 <tr key={t.id}>
                   <Td>
-                    <Link href={`/transactions/${t.id}`} className="whitespace-nowrap font-mono text-xs hover:text-primary">{t.invoiceNumber}</Link>
+                    <Link href={`/transactions/${t.id}`} className="font-mono text-xs whitespace-nowrap hover:text-primary">
+                      {t.invoiceNumber}
+                    </Link>
                     <div className="mt-0.5 text-xs whitespace-nowrap text-muted-foreground sm:hidden">{date(t.createdAt)}</div>
                   </Td>
                   <Td className={cn(HIDE_BELOW.sm, "whitespace-nowrap text-muted-foreground")}>{date(t.createdAt)}</Td>
-                  <Td className={HIDE_BELOW.md}>{t.appliedCode ? <Badge tone="gold">{t.campaignInfluencer?.influencer?.name ?? t.appliedCode}</Badge> : <span className="text-muted-foreground">—</span>}</Td>
+                  <Td className={HIDE_BELOW.md}>
+                    {t.appliedCode ? (
+                      <Badge tone="gold">{t.campaignInfluencer?.influencer?.name ?? t.appliedCode}</Badge>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
+                  </Td>
                   <Td className={cn(HIDE_BELOW.xl, "whitespace-nowrap text-muted-foreground")}>{paymentLabel(t.paymentMode)}</Td>
                   <Td className="tabular text-right font-medium whitespace-nowrap">
                     {inr(t.grandTotal)}
@@ -334,7 +414,9 @@ function CustomerBills({ customerId }: { customerId: string }) {
                       </div>
                     )}
                   </Td>
-                  <Td className={HIDE_BELOW.sm}><StatusBadge status={t.status} /></Td>
+                  <Td className={HIDE_BELOW.sm}>
+                    <StatusBadge status={t.status} />
+                  </Td>
                 </tr>
               ))}
             </tbody>

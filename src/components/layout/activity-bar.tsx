@@ -17,9 +17,7 @@ export function ActivityBar() {
 
   return (
     <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-0.5 overflow-hidden">
-      <div
-        className={`activity-bar h-full w-1/3 bg-primary transition-opacity duration-300 ${visible ? "opacity-100" : "opacity-0"}`}
-      />
+      <div className={`activity-bar h-full w-1/3 bg-primary transition-opacity duration-300 ${visible ? "opacity-100" : "opacity-0"}`} />
     </div>
   );
 }

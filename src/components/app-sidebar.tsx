@@ -28,9 +28,7 @@ export function AppSidebar({ user }: { user: Me }) {
   const closeOnMobile = () => isMobile && setOpenMobile(false);
 
   const items = NAV.filter((n) => canSee(user, n));
-  const groups = NAV_GROUPS.map((group) => ({ group, items: items.filter((i) => i.group === group) })).filter(
-    (g) => g.items.length > 0,
-  );
+  const groups = NAV_GROUPS.map((group) => ({ group, items: items.filter((i) => i.group === group) })).filter((g) => g.items.length > 0);
 
   return (
     <Sidebar collapsible="icon" className="no-print">

@@ -27,7 +27,11 @@ export default function PartnersPage() {
 
   return (
     <>
-      <PageHeader title="Partners" description="Influencers, businesses and others who bring customers in with their own offer code, and the points they've earned." actions={can("influencers.manage") && <PartnerFormButton />} />
+      <PageHeader
+        title="Partners"
+        description="Influencers, businesses and others who bring customers in with their own offer code, and the points they've earned."
+        actions={can("influencers.manage") && <PartnerFormButton />}
+      />
       <Card padded={false}>
         <FilterBar list={list} placeholder="Name, contact person, mobile or Instagram">
           <SelectInput
@@ -48,7 +52,12 @@ export default function PartnersPage() {
               { value: "INACTIVE", label: "Inactive" },
             ]}
           />
-          <EntityFilter path="/campaigns" placeholder="In any campaign" value={f.campaignId} onChange={(v) => list.setFilter("campaignId", v)} />
+          <EntityFilter
+            path="/campaigns"
+            placeholder="In any campaign"
+            value={f.campaignId}
+            onChange={(v) => list.setFilter("campaignId", v)}
+          />
           <SelectInput
             className="sm:w-44"
             aria-label="Points"
@@ -63,20 +72,32 @@ export default function PartnersPage() {
         {isLoading ? (
           <TableSkeleton />
         ) : error ? (
-          <div className="p-4"><ErrorState error={error} /></div>
+          <div className="p-4">
+            <ErrorState error={error} />
+          </div>
         ) : !data?.items.length ? (
-          <ListEmpty list={list} noun="partners" icon={Handshake} title="No partners yet" description="Add a partner, then add them to a campaign to create their QR code." />
+          <ListEmpty
+            list={list}
+            noun="partners"
+            icon={Handshake}
+            title="No partners yet"
+            description="Add a partner, then add them to a campaign to create their QR code."
+          />
         ) : (
           <div className={isFetching ? "opacity-60 transition-opacity" : "transition-opacity"} aria-busy={isFetching}>
             <Table>
               <thead>
                 <tr>
-                  <SortableTh column="name" sort={list.sort} onSort={list.toggleSort}>Partner</SortableTh>
+                  <SortableTh column="name" sort={list.sort} onSort={list.toggleSort}>
+                    Partner
+                  </SortableTh>
                   <Th className={HIDE_BELOW.md}>Type</Th>
                   <Th className={HIDE_BELOW.lg}>Instagram</Th>
                   <Th className={cn(HIDE_BELOW.lg, "text-right")}>Campaigns</Th>
                   <Th className={cn(HIDE_BELOW.sm, "text-right")}>Customers brought</Th>
-                  <SortableTh column="pointsBalance" sort={list.sort} onSort={list.toggleSort} firstDir="DESC" className="text-right">Points balance</SortableTh>
+                  <SortableTh column="pointsBalance" sort={list.sort} onSort={list.toggleSort} firstDir="DESC" className="text-right">
+                    Points balance
+                  </SortableTh>
                   <Th className={HIDE_BELOW.md}>Status</Th>
                 </tr>
               </thead>
@@ -84,7 +105,9 @@ export default function PartnersPage() {
                 {data.items.map((i) => (
                   <tr key={i.id}>
                     <Td>
-                      <Link href={`/partners/${i.id}`} className="font-medium hover:text-primary">{i.name}</Link>
+                      <Link href={`/partners/${i.id}`} className="font-medium hover:text-primary">
+                        {i.name}
+                      </Link>
                       <div className="text-xs text-muted-foreground">
                         {i.contactPerson ? `${i.contactPerson}, ` : ""}
                         {mobile(i.mobile)}
@@ -94,12 +117,16 @@ export default function PartnersPage() {
                         {i.status !== "ACTIVE" && <StatusBadge status={i.status} />}
                       </div>
                     </Td>
-                    <Td className={HIDE_BELOW.md}><Badge>{partnerTypeLabel(i.type)}</Badge></Td>
+                    <Td className={HIDE_BELOW.md}>
+                      <Badge>{partnerTypeLabel(i.type)}</Badge>
+                    </Td>
                     <Td className={cn(HIDE_BELOW.lg, "text-muted-foreground")}>{i.instagramHandle ? `@${i.instagramHandle}` : "—"}</Td>
                     <Td className={cn(HIDE_BELOW.lg, "tabular text-right")}>{i.campaignCount}</Td>
                     <Td className={cn(HIDE_BELOW.sm, "tabular text-right")}>{i.redemptionCount}</Td>
                     <Td className="tabular text-right font-medium">{number(i.pointsBalance)}</Td>
-                    <Td className={HIDE_BELOW.md}><StatusBadge status={i.status} /></Td>
+                    <Td className={HIDE_BELOW.md}>
+                      <StatusBadge status={i.status} />
+                    </Td>
                   </tr>
                 ))}
               </tbody>

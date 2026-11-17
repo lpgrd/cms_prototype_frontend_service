@@ -6,7 +6,24 @@ import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import { DateRangeFilter, dateRangeParams, FilterBar, ListEmpty, ListPagination, SortableTh } from "@/components/list-controls";
-import { Alert, Button, Card, ErrorState, Field, HIDE_BELOW, Input, Modal, PageHeader, SecretValue, SelectInput, StatusBadge, Table, TableSkeleton, Td, Th } from "@/components/ui";
+import {
+  Alert,
+  Button,
+  Card,
+  ErrorState,
+  Field,
+  HIDE_BELOW,
+  Input,
+  Modal,
+  PageHeader,
+  SecretValue,
+  SelectInput,
+  StatusBadge,
+  Table,
+  TableSkeleton,
+  Td,
+  Th,
+} from "@/components/ui";
 import { useListState } from "@/hooks/use-list-state";
 import { api, errorMessage } from "@/lib/api";
 import { cn } from "@/lib/utils";
@@ -21,7 +38,11 @@ export default function PayoutsPage() {
   const qc = useQueryClient();
   const [action, setAction] = useState<Action>(null);
   // Opens on the requests waiting for a decision; "All" is one click away.
-  const list = useListState({ filters: ["status", "from", "to"] as const, defaults: { status: "REQUESTED" }, sort: { by: "createdAt", dir: "DESC" } });
+  const list = useListState({
+    filters: ["status", "from", "to"] as const,
+    defaults: { status: "REQUESTED" },
+    sort: { by: "createdAt", dir: "DESC" },
+  });
   const f = list.filters;
 
   const { data, isLoading, isFetching, error } = useQuery({
@@ -63,7 +84,9 @@ export default function PayoutsPage() {
         {isLoading ? (
           <TableSkeleton />
         ) : error ? (
-          <div className="p-4"><ErrorState error={error} /></div>
+          <div className="p-4">
+            <ErrorState error={error} />
+          </div>
         ) : !data?.items.length ? (
           <ListEmpty
             list={list}
@@ -79,11 +102,23 @@ export default function PayoutsPage() {
               <thead>
                 <tr>
                   <Th>Partner</Th>
-                  <SortableTh column="createdAt" sort={list.sort} onSort={list.toggleSort} firstDir="DESC" className={HIDE_BELOW.md}>Requested</SortableTh>
-                  <SortableTh column="points" sort={list.sort} onSort={list.toggleSort} firstDir="DESC" className={cn(HIDE_BELOW.lg, "text-right")}>Points</SortableTh>
+                  <SortableTh column="createdAt" sort={list.sort} onSort={list.toggleSort} firstDir="DESC" className={HIDE_BELOW.md}>
+                    Requested
+                  </SortableTh>
+                  <SortableTh
+                    column="points"
+                    sort={list.sort}
+                    onSort={list.toggleSort}
+                    firstDir="DESC"
+                    className={cn(HIDE_BELOW.lg, "text-right")}
+                  >
+                    Points
+                  </SortableTh>
                   <Th className={cn(HIDE_BELOW.xl, "text-right")}>Gross</Th>
                   <Th className={cn(HIDE_BELOW.xl, "text-right")}>TDS</Th>
-                  <SortableTh column="amount" sort={list.sort} onSort={list.toggleSort} firstDir="DESC" className="text-right">Net payable</SortableTh>
+                  <SortableTh column="amount" sort={list.sort} onSort={list.toggleSort} firstDir="DESC" className="text-right">
+                    Net payable
+                  </SortableTh>
                   <Th className={HIDE_BELOW.lg}>Pay to</Th>
                   <Th className={HIDE_BELOW.sm}>Status</Th>
                   <Th />
@@ -93,7 +128,9 @@ export default function PayoutsPage() {
                 {data.items.map((p) => (
                   <tr key={p.id}>
                     <Td>
-                      <Link href={`/partners/${p.influencerId}`} className="font-medium hover:text-primary">{p.influencer?.name}</Link>
+                      <Link href={`/partners/${p.influencerId}`} className="font-medium hover:text-primary">
+                        {p.influencer?.name}
+                      </Link>
                       <div className="mt-0.5 text-xs text-muted-foreground md:hidden">
                         {date(p.createdAt)}, {number(p.points)} pts
                       </div>
@@ -104,10 +141,14 @@ export default function PayoutsPage() {
                     <Td className={cn(HIDE_BELOW.md, "text-muted-foreground")}>{date(p.createdAt)}</Td>
                     <Td className={cn(HIDE_BELOW.lg, "tabular text-right")}>{number(p.points)}</Td>
                     <Td className={cn(HIDE_BELOW.xl, "tabular text-right")}>{inr(p.grossAmount)}</Td>
-                    <Td className={cn(HIDE_BELOW.xl, "tabular text-right text-muted-foreground")}>{p.tdsAmount ? inr(p.tdsAmount) : "—"}</Td>
+                    <Td className={cn(HIDE_BELOW.xl, "tabular text-right text-muted-foreground")}>
+                      {p.tdsAmount ? inr(p.tdsAmount) : "—"}
+                    </Td>
                     <Td className="tabular text-right font-medium whitespace-nowrap">
                       {inr(p.amount)}
-                      {p.tdsAmount > 0 && <div className="text-xs font-normal text-muted-foreground xl:hidden">after {inr(p.tdsAmount)} TDS</div>}
+                      {p.tdsAmount > 0 && (
+                        <div className="text-xs font-normal text-muted-foreground xl:hidden">after {inr(p.tdsAmount)} TDS</div>
+                      )}
                     </Td>
                     <Td className={cn(HIDE_BELOW.lg, "text-xs text-muted-foreground")}>
                       {p.influencer?.upiId ? (
@@ -127,11 +168,19 @@ export default function PayoutsPage() {
                     <Td className="text-right">
                       <div className="flex flex-col items-end gap-1 sm:flex-row sm:justify-end">
                         {manage && p.status === "REQUESTED" && (
-                          <Button size="sm" loading={approve.isPending && approve.variables === p.id} onClick={() => approve.mutate(p.id)}>Approve</Button>
+                          <Button size="sm" loading={approve.isPending && approve.variables === p.id} onClick={() => approve.mutate(p.id)}>
+                            Approve
+                          </Button>
                         )}
-                        {manage && p.status === "APPROVED" && <Button size="sm" onClick={() => setAction({ kind: "pay", payout: p })}>Mark paid</Button>}
+                        {manage && p.status === "APPROVED" && (
+                          <Button size="sm" onClick={() => setAction({ kind: "pay", payout: p })}>
+                            Mark paid
+                          </Button>
+                        )}
                         {manage && (p.status === "REQUESTED" || p.status === "APPROVED") && (
-                          <Button size="sm" variant="danger" onClick={() => setAction({ kind: "reject", payout: p })}>Reject</Button>
+                          <Button size="sm" variant="danger" onClick={() => setAction({ kind: "reject", payout: p })}>
+                            Reject
+                          </Button>
                         )}
                       </div>
                     </Td>
@@ -158,7 +207,11 @@ function ActionDialog({ action, onClose, onDone }: { action: NonNullable<Action>
       kind === "pay"
         ? api.post(`/payouts/${payout.id}/mark-paid`, { paymentMode: mode, paymentReference: reference })
         : api.post(`/payouts/${payout.id}/reject`, { reason }),
-    onSuccess: () => (onDone(), onClose(), toast.success(kind === "pay" ? "Marked as paid" : "Rejected. The points went back to the partner.")),
+    onSuccess: () => (
+      onDone(),
+      onClose(),
+      toast.success(kind === "pay" ? "Marked as paid" : "Rejected. The points went back to the partner.")
+    ),
   });
   const valid = kind === "pay" ? reference.trim().length > 0 : reason.trim().length >= 3;
 
@@ -169,8 +222,15 @@ function ActionDialog({ action, onClose, onDone }: { action: NonNullable<Action>
       title={kind === "pay" ? `Pay ${inr(payout.amount)} to ${payout.influencer?.name}` : "Reject payout"}
       footer={
         <>
-          <Button variant="secondary" onClick={onClose}>Cancel</Button>
-          <Button variant={kind === "pay" ? "primary" : "destructive"} loading={run.isPending} disabled={!valid} onClick={() => run.mutate()}>
+          <Button variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button
+            variant={kind === "pay" ? "primary" : "destructive"}
+            loading={run.isPending}
+            disabled={!valid}
+            onClick={() => run.mutate()}
+          >
             {kind === "pay" ? "Confirm payment" : "Reject payout"}
           </Button>
         </>
@@ -192,7 +252,9 @@ function ActionDialog({ action, onClose, onDone }: { action: NonNullable<Action>
                 ]}
               />
             </Field>
-            <Field label="Reference" required hint="UTR / transaction ID / cheque number"><Input value={reference} onChange={(e) => setReference(e.target.value)} /></Field>
+            <Field label="Reference" required hint="UTR / transaction ID / cheque number">
+              <Input value={reference} onChange={(e) => setReference(e.target.value)} />
+            </Field>
           </>
         ) : (
           <Field label="Reason" required hint="The partner will see this. Their points are returned.">

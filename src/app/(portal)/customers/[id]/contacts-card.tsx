@@ -7,7 +7,13 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Alert, Badge, Button, Card, Checkbox, ConfirmDialog, Field, Input, MaskedInput, Modal, SelectInput } from "@/components/ui";
 import { Button as ShadcnButton } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { api, errorMessage } from "@/lib/api";
 import { phone } from "@/lib/format";
 import type { ContactType, CustomerContact } from "@/lib/types";
@@ -26,7 +32,8 @@ export function ContactsCard({ customerId, contacts, editable }: { customerId: s
     qc.invalidateQueries({ queryKey: ["customers"] });
   };
   const patch = useMutation({
-    mutationFn: ({ id, body }: { id: string; body: Partial<CustomerContact> }) => api.patch(`/customers/${customerId}/contacts/${id}`, body),
+    mutationFn: ({ id, body }: { id: string; body: Partial<CustomerContact> }) =>
+      api.patch(`/customers/${customerId}/contacts/${id}`, body),
     onSuccess: refresh,
     onError: (e) => toast.error(errorMessage(e)),
   });
@@ -41,7 +48,8 @@ export function ContactsCard({ customerId, contacts, editable }: { customerId: s
 
   return (
     <Card
-      title="Contacts" icon={Contact}
+      title="Contacts"
+      icon={Contact}
       actions={
         editable && (
           <DropdownMenu>
@@ -61,7 +69,11 @@ export function ContactsCard({ customerId, contacts, editable }: { customerId: s
           <ul key={type} className="mb-3 space-y-3 last:mb-0">
             {render(type).map((c) => (
               <li key={c.id} className="flex items-start gap-3 text-sm">
-                {type === "PHONE" ? <Phone className="mt-0.5 size-4 shrink-0 text-muted-foreground" /> : <Mail className="mt-0.5 size-4 shrink-0 text-muted-foreground" />}
+                {type === "PHONE" ? (
+                  <Phone className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+                ) : (
+                  <Mail className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+                )}
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-1.5">
                     <span className={clsx("tabular font-medium", c.isOutdated && "text-muted-foreground line-through")}>
@@ -107,7 +119,8 @@ export function ContactsCard({ customerId, contacts, editable }: { customerId: s
         ),
       )}
       <p className="mt-3 border-t border-border pt-3 text-xs text-muted-foreground">
-        The primary mobile identifies the customer for offers and OTPs. Keep old numbers as outdated so the customer can still be found by them.
+        The primary mobile identifies the customer for offers and OTPs. Keep old numbers as outdated so the customer can still be found by
+        them.
       </p>
 
       <ConfirmDialog
@@ -116,8 +129,10 @@ export function ContactsCard({ customerId, contacts, editable }: { customerId: s
         title={`Remove ${removing?.type === "EMAIL" ? "this email" : "this number"}?`}
         description={
           <>
-            <span className="font-mono text-foreground">{removing && (removing.type === "PHONE" ? phone(removing.value) : removing.value)}</span> will be deleted
-            from this customer. To keep it for history, mark it as outdated instead.
+            <span className="font-mono text-foreground">
+              {removing && (removing.type === "PHONE" ? phone(removing.value) : removing.value)}
+            </span>{" "}
+            will be deleted from this customer. To keep it for history, mark it as outdated instead.
           </>
         }
         confirmLabel="Remove contact"
@@ -179,8 +194,12 @@ function ContactDialog({
       title={contact ? `Edit ${noun}` : `Add ${noun}`}
       footer={
         <>
-          <Button variant="secondary" onClick={onClose}>Cancel</Button>
-          <Button loading={save.isPending} disabled={value.trim().length < 3} onClick={() => save.mutate()}>Save</Button>
+          <Button variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button loading={save.isPending} disabled={value.trim().length < 3} onClick={() => save.mutate()}>
+            Save
+          </Button>
         </>
       }
     >
@@ -190,14 +209,15 @@ function ContactDialog({
           <Field
             required
             label={type === "PHONE" ? "Number" : "Email"}
-            hint={contact?.isPrimary && type === "PHONE" ? "This is the primary mobile, so it must be a valid 10-digit mobile." : type === "PHONE" ? "Any number: mobile, landline, international." : undefined}
+            hint={
+              contact?.isPrimary && type === "PHONE"
+                ? "This is the primary mobile, so it must be a valid 10-digit mobile."
+                : type === "PHONE"
+                  ? "Any number: mobile, landline, international."
+                  : undefined
+            }
           >
-            <ContactValueInput
-              type={type}
-              primary={!!contact?.isPrimary}
-              value={value}
-              onChange={(e) => setValue(e.target.value)}
-            />
+            <ContactValueInput type={type} primary={!!contact?.isPrimary} value={value} onChange={(e) => setValue(e.target.value)} />
           </Field>
           <Field label="Label">
             <SelectInput value={label ?? ""} onValueChange={setLabel} options={LABELS[type].map((l) => ({ value: l, label: l }))} />
@@ -206,7 +226,9 @@ function ContactDialog({
         <Field label="Remark" hint="e.g. outdated contact, office hours only, husband's number">
           <Input maxLength={200} value={remark} onChange={(e) => setRemark(e.target.value)} />
         </Field>
-        {!contact?.isPrimary && <Checkbox label="Outdated (kept for history, not used to contact them)" checked={isOutdated} onCheckedChange={setIsOutdated} />}
+        {!contact?.isPrimary && (
+          <Checkbox label="Outdated (kept for history, not used to contact them)" checked={isOutdated} onCheckedChange={setIsOutdated} />
+        )}
       </div>
     </Modal>
   );

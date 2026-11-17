@@ -98,12 +98,7 @@ export function DatePicker({
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger
           disabled={disabled}
-          render={
-            <Button
-              variant="outline"
-              className={cn("min-w-0 flex-1 justify-start font-normal", !date && "text-muted-foreground")}
-            />
-          }
+          render={<Button variant="outline" className={cn("min-w-0 flex-1 justify-start font-normal", !date && "text-muted-foreground")} />}
         >
           <CalendarIcon />
           <span className="truncate">{date ? format(date, "d MMM yyyy") : placeholder}</span>
@@ -178,7 +173,11 @@ interface Bound<T extends FieldValues> {
   name: FieldPath<T>;
 }
 
-export function FormSelect<T extends FieldValues>({ control, name, ...props }: Bound<T> & Omit<Parameters<typeof SelectInput>[0], "value" | "onValueChange">) {
+export function FormSelect<T extends FieldValues>({
+  control,
+  name,
+  ...props
+}: Bound<T> & Omit<Parameters<typeof SelectInput>[0], "value" | "onValueChange">) {
   return (
     <Controller
       control={control}
@@ -188,7 +187,11 @@ export function FormSelect<T extends FieldValues>({ control, name, ...props }: B
   );
 }
 
-export function FormDatePicker<T extends FieldValues>({ control, name, ...props }: Bound<T> & Omit<Parameters<typeof DatePicker>[0], "value" | "onChange">) {
+export function FormDatePicker<T extends FieldValues>({
+  control,
+  name,
+  ...props
+}: Bound<T> & Omit<Parameters<typeof DatePicker>[0], "value" | "onChange">) {
   return (
     <Controller
       control={control}
@@ -198,7 +201,11 @@ export function FormDatePicker<T extends FieldValues>({ control, name, ...props 
   );
 }
 
-export function FormDateTimePicker<T extends FieldValues>({ control, name, ...props }: Bound<T> & Omit<Parameters<typeof DateTimePicker>[0], "value" | "onChange">) {
+export function FormDateTimePicker<T extends FieldValues>({
+  control,
+  name,
+  ...props
+}: Bound<T> & Omit<Parameters<typeof DateTimePicker>[0], "value" | "onChange">) {
   return (
     <Controller
       control={control}

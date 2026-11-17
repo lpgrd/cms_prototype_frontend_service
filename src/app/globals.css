@@ -145,8 +145,12 @@
 }
 /* Indeterminate progress for the top bar (see components/layout/activity-bar.tsx). */
 @keyframes activity-slide {
-  from { transform: translateX(-100%); }
-  to { transform: translateX(300%); }
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(300%);
+  }
 }
 .activity-bar {
   animation: activity-slide 1.1s ease-in-out infinite;

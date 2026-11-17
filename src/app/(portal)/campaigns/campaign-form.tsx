@@ -180,7 +180,9 @@ export function CampaignForm({
         <RequiredNote />
         <span className="flex-1" />
         {secondaryAction}
-        <Button type="submit" loading={submitting}>{submitLabel}</Button>
+        <Button type="submit" loading={submitting}>
+          {submitLabel}
+        </Button>
       </div>
     </form>
   );

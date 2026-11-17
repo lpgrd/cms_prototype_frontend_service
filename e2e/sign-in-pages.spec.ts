@@ -23,14 +23,20 @@ test("partners sign in on their own page and staff on theirs", async ({ page, br
   await visitor.goto("/login");
   await expect(visitor.getByRole("heading", { name: "Sign in" })).toBeVisible();
   await visitor.getByLabel("Email").filter({ visible: true }).fill(creds.email);
-  await visitor.getByLabel(/^Password/).filter({ visible: true }).fill(creds.password);
+  await visitor
+    .getByLabel(/^Password/)
+    .filter({ visible: true })
+    .fill(creds.password);
   await visitor.getByRole("button", { name: "Sign in" }).click();
   await expect(visitor.getByText("Partners sign in on the partner page")).toBeVisible();
   await visitor.getByRole("link", { name: "Go to the partner sign-in" }).click();
   await expect(visitor).toHaveURL(/\/partner\/login$/);
 
   await visitor.getByLabel("Email").filter({ visible: true }).fill(creds.email);
-  await visitor.getByLabel(/^Password/).filter({ visible: true }).fill(creds.password);
+  await visitor
+    .getByLabel(/^Password/)
+    .filter({ visible: true })
+    .fill(creds.password);
   await visitor.getByRole("button", { name: "Sign in" }).click();
   await expect(visitor).toHaveURL(/\/partner$/);
 

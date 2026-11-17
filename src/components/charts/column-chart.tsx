@@ -63,13 +63,16 @@ export function ColumnChart({
                   }}
                 />
                 {last && d.value > 0 && hover === null && (
-                  <span className="tabular absolute whitespace-nowrap text-xs font-medium text-foreground" style={{ bottom: `calc(${pct}% + 4px)` }}>
+                  <span
+                    className="tabular absolute text-xs font-medium whitespace-nowrap text-foreground"
+                    style={{ bottom: `calc(${pct}% + 4px)` }}
+                  >
                     {format(d.value)}
                   </span>
                 )}
                 {hover === i && (
                   <div
-                    className="pointer-events-none absolute z-10 whitespace-nowrap rounded-lg border border-border bg-card px-3 py-2 text-xs shadow-lg"
+                    className="pointer-events-none absolute z-10 rounded-lg border border-border bg-card px-3 py-2 text-xs whitespace-nowrap shadow-lg"
                     style={{ bottom: `calc(${pct}% + 8px)` }}
                   >
                     <div className="font-medium text-foreground">{d.label}</div>
@@ -82,7 +85,7 @@ export function ColumnChart({
           })}
         </div>
       </div>
-      <div className="ml-14 mt-2 flex">
+      <div className="mt-2 ml-14 flex">
         {data.map((d) => (
           <div key={d.key} className="flex-1 text-center text-[11px] text-muted-foreground">
             {d.label}
@@ -91,17 +94,17 @@ export function ColumnChart({
       </div>
       {/* Tables ignore sr-only's 1px width, so the wrapper does the hiding. */}
       <div className="sr-only">
-      <table>
-        <caption>{ariaLabel}</caption>
-        <tbody>
-          {data.map((d) => (
-            <tr key={d.key}>
-              <th>{d.label}</th>
-              <td>{format(d.value)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        <table>
+          <caption>{ariaLabel}</caption>
+          <tbody>
+            {data.map((d) => (
+              <tr key={d.key}>
+                <th>{d.label}</th>
+                <td>{format(d.value)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </figure>
   );
