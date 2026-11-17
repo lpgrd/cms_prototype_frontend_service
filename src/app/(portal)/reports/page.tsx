@@ -3,7 +3,7 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { CalendarRange, Download, FileBarChart } from "lucide-react";
 import { useState } from "react";
-import { Button, Card, DatePicker, Empty, ErrorState, PageHeader, SelectInput, Spinner, Table, Td, Th } from "@/components/ui";
+import { Button, Card, DatePicker, Empty, ErrorState, PageHeader, SelectInput, Table, TableSkeleton, Td, Th } from "@/components/ui";
 import { api } from "@/lib/api";
 import { number } from "@/lib/format";
 import { FULL_BILLING } from "@/lib/features";
@@ -56,7 +56,7 @@ export default function ReportsPage() {
         {!valid ? (
           <Empty icon={CalendarRange} title="Pick a date range" description="“From” must be on or before “To”." />
         ) : isLoading ? (
-          <Spinner />
+          <TableSkeleton />
         ) : error || !data ? (
           <div className="p-4">
             <ErrorState error={error} />

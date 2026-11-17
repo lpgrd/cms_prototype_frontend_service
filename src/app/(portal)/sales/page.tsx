@@ -6,7 +6,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import { DateRangeFilter, dateRangeParams, EntityFilter, FilterBar, ListEmpty, ListPagination, SortableTh } from "@/components/list-controls";
-import { Alert, Button, Card, ConfirmDialog, ErrorState, Field, HIDE_BELOW, PageHeader, SelectInput, Spinner, Stat, StatusBadge, Table, Td, Textarea, Th } from "@/components/ui";
+import { Alert, Button, Card, ConfirmDialog, ErrorState, Field, HIDE_BELOW, PageHeader, SelectInput, Stat, StatusBadge, Table, TableSkeleton, Td, Textarea, Th } from "@/components/ui";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useListState } from "@/hooks/use-list-state";
 import { api, errorMessage } from "@/lib/api";
 import { dateTime, inr, inrShort, mobile, number, points } from "@/lib/format";
@@ -53,10 +54,10 @@ export default function SalesPage() {
 
       {/* Totals follow the filters, so a date range or partner gives that period's or partner's figures. */}
       <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Stat icon={ReceiptIndianRupee} label="Billed" value={inrShort(totals?.billAmount)} sub={totals ? `${number(totals.sales)} sales` : undefined} />
-        <Stat icon={TicketPercent} label="Discount given" value={inrShort(totals?.discountAmount)} />
-        <Stat icon={IndianRupee} label="Customers paid" value={inrShort(totals?.finalAmount)} accent />
-        <Stat icon={Sparkles} label="Partner points" value={points(totals?.pointsAwarded)} />
+        <Stat icon={ReceiptIndianRupee} label="Billed" value={totals ? inrShort(totals.billAmount) : <StatLoading />} sub={totals ? `${number(totals.sales)} sales` : undefined} />
+        <Stat icon={TicketPercent} label="Discount given" value={totals ? inrShort(totals.discountAmount) : <StatLoading />} />
+        <Stat icon={IndianRupee} label="Customers paid" value={totals ? inrShort(totals.finalAmount) : <StatLoading />} accent />
+        <Stat icon={Sparkles} label="Partner points" value={totals ? points(totals.pointsAwarded) : <StatLoading />} />
       </div>
 
       <Card padded={false}>
@@ -77,7 +78,7 @@ export default function SalesPage() {
           <EntityFilter path="/influencers" placeholder="Any partner" value={f.influencerId} onChange={(v) => list.setFilter("influencerId", v)} />
         </FilterBar>
         {isLoading ? (
-          <Spinner />
+          <TableSkeleton />
         ) : error ? (
           <div className="p-4"><ErrorState error={error} /></div>
         ) : !data?.items.length ? (
@@ -94,8 +95,7 @@ export default function SalesPage() {
                   <Th className={cn(HIDE_BELOW.lg, "text-right")}>Discount</Th>
                   <SortableTh column="finalAmount" sort={list.sort} onSort={list.toggleSort} firstDir="DESC" className="text-right">Paid</SortableTh>
                   <Th className={HIDE_BELOW.md}>Status</Th>
-                  {/* relative keeps the visually hidden label inside the table's scroll box. */}
-                  {can("bills.cancel") && <Th className="relative w-10"><span className="sr-only">Actions</span></Th>}
+                  {can("bills.cancel") && <Th className="w-10"><span className="sr-only">Actions</span></Th>}
                 </tr>
               </thead>
               <tbody>
@@ -174,6 +174,11 @@ export default function SalesPage() {
       {cancelling && <CancelSaleDialog key={cancelling.id} sale={cancelling} onClose={() => setCancelling(null)} />}
     </>
   );
+}
+
+/** A total that is still loading (the tiles show "—" only for a real nothing). */
+function StatLoading() {
+  return <Skeleton className="mt-1 h-7 w-24 motion-reduce:animate-none" aria-label="Loading" />;
 }
 
 function CancelSaleDialog({ sale, onClose }: { sale: PartnerSale; onClose: () => void }) {

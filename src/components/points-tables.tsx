@@ -4,7 +4,7 @@ import { History, Wallet } from "lucide-react";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import clsx from "clsx";
 import { useState } from "react";
-import { Empty, ErrorState, HIDE_BELOW, Spinner, StatusBadge, Table, Td, Th } from "@/components/ui";
+import { Empty, ErrorState, HIDE_BELOW, StatusBadge, Table, TableSkeleton, Td, Th } from "@/components/ui";
 import { Pagination } from "@/components/list-controls";
 import { api } from "@/lib/api";
 import { date, dateTime, inr, number } from "@/lib/format";
@@ -26,7 +26,7 @@ export function LedgerTable({ endpoint }: { endpoint: string }) {
     queryFn: () => api.get<Paginated<LedgerEntry>>(endpoint, { page, limit: 15 }),
     placeholderData: keepPreviousData,
   });
-  if (isLoading) return <Spinner />;
+  if (isLoading) return <TableSkeleton />;
   if (error || !data) return <div className="p-4"><ErrorState error={error} /></div>;
   if (!data.items.length) return <Empty icon={History} title="No points activity yet" />;
 

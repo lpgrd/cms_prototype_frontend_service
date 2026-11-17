@@ -9,7 +9,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { QrScannerModal } from "@/components/qr-scanner";
-import { Alert, Badge, Button, Card, Checkbox, Field, FormDatePicker, FormSelect, Input, MaskedInput, PageHeader, RequiredNote, Textarea } from "@/components/ui";
+import { Alert, Badge, Button, Card, Checkbox, Field, FormDatePicker, FormSelect, InlineLoading, Input, MaskedInput, PageHeader, RequiredNote, Textarea } from "@/components/ui";
 import { api, errorMessage } from "@/lib/api";
 import { codeFromScan } from "@/lib/partner-code";
 import { date, inr, inrShort, plural, points } from "@/lib/format";
@@ -486,8 +486,8 @@ export default function BillingPage() {
 
         {/* Summary */}
         <div id="bill-summary" className="scroll-mt-16 xl:sticky xl:top-16 xl:self-start">
-          <Card title="Summary" icon={Calculator}>
-            <dl className="tabular space-y-2 text-sm">
+          <Card title="Summary" icon={Calculator} actions={preview.isFetching ? <InlineLoading>Updating…</InlineLoading> : undefined}>
+            <dl className={clsx("tabular space-y-2 text-sm transition-opacity", preview.isFetching && "opacity-50")} aria-busy={preview.isFetching}>
               <Row label="Subtotal" value={inr(totals?.subtotal)} />
               <Row label="Making charges" value={inr(totals?.makingChargesTotal)} muted />
               <Row

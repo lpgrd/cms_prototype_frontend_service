@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Clock3, MapPin, Phone, Ticket } from "lucide-react";
 import { HallmarkStamp } from "@/components/hallmark-stamp";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useParams } from "next/navigation";
 import { api } from "@/lib/api";
 import { date } from "@/lib/format";
@@ -17,7 +18,19 @@ export function OfferView() {
     retry: false,
   });
 
-  if (isLoading) return <div className="p-10 text-center text-sm text-muted-foreground">Loading offer…</div>;
+  if (isLoading) {
+    return (
+      <div role="status" className="mx-auto flex min-h-screen max-w-md flex-col items-center px-6 py-10">
+        <span className="sr-only">Loading the offer…</span>
+        <Skeleton className="size-28 rounded-full motion-reduce:animate-none" />
+        <Skeleton className="mt-10 h-4 w-56 motion-reduce:animate-none" />
+        <Skeleton className="mt-4 h-10 w-72 motion-reduce:animate-none" />
+        <Skeleton className="mt-3 h-10 w-48 motion-reduce:animate-none" />
+        <Skeleton className="mt-4 h-4 w-32 motion-reduce:animate-none" />
+        <Skeleton className="mt-10 h-32 w-full rounded-xl motion-reduce:animate-none" />
+      </div>
+    );
+  }
 
   const store = data?.store.name ?? "Our store";
   return (

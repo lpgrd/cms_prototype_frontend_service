@@ -6,7 +6,7 @@ import { CalendarDays, Coins, IndianRupee, LayoutDashboard, Sparkles, TrendingUp
 import { AnimatedNumber } from "@/components/animated-number";
 import { ColumnChart } from "@/components/charts/column-chart";
 import { useMe } from "@/providers/auth";
-import { Card, Empty, ErrorState, PageHeader, Spinner, Stat, Table, Td, Th } from "@/components/ui";
+import { Card, Empty, ErrorState, PageHeader, PageSkeleton, Stat, Table, Td, Th } from "@/components/ui";
 import { api } from "@/lib/api";
 import { inrShort, number, plural, points } from "@/lib/format";
 import type { DashboardSummary } from "@/lib/types";
@@ -35,7 +35,7 @@ export default function DashboardPage() {
     queryFn: () => api.get<DashboardSummary>("/dashboard/summary"),
   });
 
-  if (isLoading) return <Spinner />;
+  if (isLoading) return <PageSkeleton stats={4} kind="detail" />;
   if (error || !data) return <ErrorState error={error} />;
 
   const { sales, customers, points: owed, influencers } = data;

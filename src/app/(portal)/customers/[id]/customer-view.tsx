@@ -6,7 +6,7 @@ import { BadgePercent, Cake, CalendarClock, CreditCard, Download, Gem, HandCoins
 import { toast } from "sonner";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { Badge, Button, Card, Checkbox, DefinitionList, Empty, ErrorState, HIDE_BELOW, PageHeader, SecretValue, Spinner, Stat, StatusBadge, Table, Td, Th } from "@/components/ui";
+import { Badge, Button, Card, Checkbox, DefinitionList, Empty, ErrorState, HIDE_BELOW, PageHeader, PageSkeleton, SecretValue, Stat, StatusBadge, Table, TableSkeleton, Td, Th } from "@/components/ui";
 import { Pagination } from "@/components/list-controls";
 import { api, errorMessage } from "@/lib/api";
 import { cn } from "@/lib/utils";
@@ -25,7 +25,7 @@ export function CustomerView() {
     queryFn: () => api.get<Customer360>(`/customers/${id}`),
   });
 
-  if (isLoading) return <Spinner />;
+  if (isLoading) return <PageSkeleton stats={4} kind="detail" />;
   if (error || !data) {
     return (
       <>
@@ -239,7 +239,7 @@ function CustomerSales({ customerId }: { customerId: string }) {
   return (
     <Card title={data ? `Sales (${data.total})` : "Sales"} icon={HandCoins} padded={false}>
       {isLoading ? (
-        <Spinner />
+        <TableSkeleton />
       ) : error || !data ? (
         <div className="p-4">
           <ErrorState error={error} />
@@ -296,7 +296,7 @@ function CustomerBills({ customerId }: { customerId: string }) {
   return (
     <Card title={data ? `Bills (${data.total})` : "Bills"} icon={Receipt} padded={false}>
       {isLoading ? (
-        <Spinner />
+        <TableSkeleton />
       ) : error || !data ? (
         <div className="p-4">
           <ErrorState error={error} />

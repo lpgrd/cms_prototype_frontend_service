@@ -4,7 +4,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Megaphone, Plus } from "lucide-react";
 import Link from "next/link";
 import { FilterBar, ListEmpty, ListPagination, SortableTh } from "@/components/list-controls";
-import { Button, Card, ErrorState, HIDE_BELOW, PageHeader, SelectInput, Spinner, StatusBadge, Table, Td, Th } from "@/components/ui";
+import { Button, Card, ErrorState, HIDE_BELOW, PageHeader, SelectInput, StatusBadge, Table, TableSkeleton, Td, Th } from "@/components/ui";
 import { useListState } from "@/hooks/use-list-state";
 import { cn } from "@/lib/utils";
 import { api } from "@/lib/api";
@@ -50,7 +50,7 @@ export default function CampaignsPage() {
           <SelectInput className="sm:w-40" aria-label="Status" value={list.filters.status} onValueChange={(v) => list.setFilter("status", v)} options={STATUSES} />
         </FilterBar>
         {isLoading ? (
-          <Spinner />
+          <TableSkeleton />
         ) : error ? (
           <div className="p-4"><ErrorState error={error} /></div>
         ) : !data?.items.length ? (

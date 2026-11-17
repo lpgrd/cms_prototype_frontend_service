@@ -1,7 +1,7 @@
 "use client";
 
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { History, UserRound } from "lucide-react";
+import { History, Loader2, UserRound } from "lucide-react";
 import { KeyboardEvent, useEffect, useId, useState } from "react";
 import type { UseFormRegisterReturn } from "react-hook-form";
 import { MaskedInput } from "@/components/ui";
@@ -51,7 +51,7 @@ export function CustomerMobileInput({
     return () => clearTimeout(t);
   }, [value]);
 
-  const { data } = useQuery({
+  const { data, isFetching } = useQuery({
     queryKey: ["customer-suggest", term],
     queryFn: () => api.get<{ items: Suggestion[] }>("/customers/suggest", { q: term }),
     enabled: term.length >= MIN_DIGITS,
@@ -59,6 +59,8 @@ export function CustomerMobileInput({
     staleTime: 30_000,
   });
   const items = value.length >= MIN_DIGITS ? (data?.items ?? []) : [];
+  // Includes the pause before the search is sent, so the field shows it is working as soon as typing stops.
+  const searching = focused && value.length >= MIN_DIGITS && (isFetching || term !== value);
   // Once the field holds exactly one customer's primary mobile, the details card takes over.
   const settled = items.length > 0 && items.every((c) => c.mobile === value);
   const open = focused && !dismissed && items.length > 0 && !settled;
@@ -115,7 +117,15 @@ export function CustomerMobileInput({
           return field.onChange(e);
         }}
         onKeyDown={onKeyDown}
+        className={searching ? "pr-9" : undefined}
       />
+      {searching && (
+        <Loader2
+          role="status"
+          aria-label="Searching customers"
+          className="absolute top-1/2 right-3 size-4 -translate-y-1/2 animate-spin text-muted-foreground motion-reduce:animate-none"
+        />
+      )}
       {open && (
         <ul
           id={listId}

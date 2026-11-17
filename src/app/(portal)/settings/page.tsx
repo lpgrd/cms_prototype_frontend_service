@@ -7,7 +7,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { Alert, Badge, Button, Card, Checkbox, ConfirmDialog, ErrorState, Field, FormSelect, HIDE_BELOW, Input, MaskedInput, Modal, PageHeader, PasswordInput, RequiredNote, SelectInput, Spinner, Table, Td, Textarea, Th } from "@/components/ui";
+import { Alert, Badge, Button, Card, Checkbox, ConfirmDialog, ErrorState, Field, FormSelect, HIDE_BELOW, Input, MaskedInput, Modal, PageHeader, PasswordInput, RequiredNote, SelectInput, Spinner, Table, TableSkeleton, Td, Textarea, Th } from "@/components/ui";
 import { api, ApiError, errorMessage } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { date } from "@/lib/format";
@@ -66,7 +66,7 @@ function StoreSettings() {
   });
   const err = save.error instanceof ApiError ? save.error : null;
 
-  if (isLoading) return <Card title="Store" icon={Store}><Spinner /></Card>;
+  if (isLoading) return <Card title="Store" icon={Store}><Spinner rows={6} label="Loading settings…" /></Card>;
   if (error) return <ErrorState error={error} />;
 
   return (
@@ -164,7 +164,7 @@ function UsersCard() {
       actions={<Button size="sm" icon={<UserPlus className="size-4" />} onClick={() => setOpen(true)}>Add staff</Button>}
     >
       {isLoading ? (
-        <Spinner />
+        <TableSkeleton rows={3} columns={4} />
       ) : error ? (
         <div className="p-4"><ErrorState error={error} /></div>
       ) : (

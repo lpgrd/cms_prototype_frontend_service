@@ -4,7 +4,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Plus, Receipt } from "lucide-react";
 import Link from "next/link";
 import { DateRangeFilter, dateRangeParams, EntityFilter, FilterBar, ListEmpty, ListPagination, SortableTh } from "@/components/list-controls";
-import { Badge, Button, Card, ErrorState, HIDE_BELOW, PageHeader, SelectInput, Spinner, StatusBadge, Table, Td, Th } from "@/components/ui";
+import { Badge, Button, Card, ErrorState, HIDE_BELOW, PageHeader, SelectInput, StatusBadge, Table, TableSkeleton, Td, Th } from "@/components/ui";
 import { useListState } from "@/hooks/use-list-state";
 import { api } from "@/lib/api";
 import { cn } from "@/lib/utils";
@@ -86,7 +86,7 @@ export default function TransactionsPage() {
           )}
         </FilterBar>
         {isLoading ? (
-          <Spinner />
+          <TableSkeleton />
         ) : error ? (
           <div className="p-4"><ErrorState error={error} /></div>
         ) : !data?.items.length ? (

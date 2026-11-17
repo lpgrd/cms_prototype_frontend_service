@@ -8,7 +8,9 @@ import { useForm, useWatch } from "react-hook-form";
 import { toast } from "sonner";
 import { CustomerMobileInput } from "@/components/customer-mobile-input";
 import { QrScannerModal } from "@/components/qr-scanner";
-import { Alert, Badge, Button, Card, Empty, Field, Input, MaskedInput, PageHeader, RequiredNote, Textarea } from "@/components/ui";
+import { Alert, Badge, Button, Card, Empty, Field, InlineLoading, Input, MaskedInput, PageHeader, RequiredNote, Textarea } from "@/components/ui";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 import { useDebounced } from "@/hooks/use-debounced";
 import { api, errorMessage } from "@/lib/api";
 import { codeFromScan } from "@/lib/partner-code";
@@ -47,18 +49,23 @@ export default function PartnerSalePage() {
   const mobile = digits(watched.mobile ?? "");
   const mobileValid = isMobile(mobile);
 
-  const previewInput = useDebounced({ code, billAmount, makingCharges, mobile: mobileValid ? mobile : undefined });
+  const currentInput = { code, billAmount, makingCharges, mobile: mobileValid ? mobile : undefined };
+  const previewInput = useDebounced(currentInput);
   const preview = useQuery({
     queryKey: ["sale-preview", previewInput],
     queryFn: () => api.post<SalePreview>("/partner-sales/preview", { ...previewInput, billAmount: previewInput.billAmount ?? 1 }),
     enabled: !!previewInput.code,
     placeholderData: (prev) => prev,
   });
+  // Typing has not settled yet, or the preview for it is on its way: what is shown may be out of date.
+  const updating = !!code && (preview.isFetching || JSON.stringify(currentInput) !== JSON.stringify(previewInput));
   // The preview always needs an amount, so without one it only identifies the partner.
   const data = code ? preview.data : undefined;
-  const offer = data?.offer ?? null;
-  const amounts = billAmount ? (data?.amounts ?? null) : null;
-  const codeError = billAmount || !data?.offer ? (data?.codeError ?? null) : null;
+  // A previous code's partner stays on screen while the next one loads; it is never shown for a different code.
+  const staleCode = !!data?.offer && data.offer.code !== code.toUpperCase();
+  const offer = staleCode ? null : (data?.offer ?? null);
+  const amounts = billAmount && !staleCode ? (data?.amounts ?? null) : null;
+  const codeError = staleCode ? null : billAmount || !data?.offer ? (data?.codeError ?? null) : null;
 
   const lookup = useQuery({
     queryKey: ["customer-lookup", mobile],
@@ -181,6 +188,11 @@ export default function PartnerSalePage() {
               <Field label="Mobile number" hint={otpRequired ? "Needed: the offer applies once the customer confirms an OTP." : "Links the sale to the customer and allows one offer per customer."}>
                 <CustomerMobileInput field={register("mobile")} value={mobile} onPick={(m) => setValue("mobile", m, { shouldDirty: true })} />
               </Field>
+              {mobileValid && lookup.isFetching && !lookup.data && (
+                <div className="flex items-end pb-2.5">
+                  <InlineLoading>Looking up the customer…</InlineLoading>
+                </div>
+              )}
               {mobileValid && lookup.isSuccess && existing && (
                 <div className="flex items-end">
                   <div className="flex w-full items-center gap-3 rounded-lg border border-primary/30 bg-primary/10 px-3 py-2 text-sm">
@@ -224,14 +236,14 @@ export default function PartnerSalePage() {
         </div>
 
         <div id="sale-summary" className="space-y-6 lg:sticky lg:top-16 lg:col-span-2 lg:self-start">
-          <Card title="Partner" icon={HandCoins}>
+          <Card title="Partner" icon={HandCoins} actions={offer && updating ? <InlineLoading>Checking…</InlineLoading> : undefined}>
             {!code ? (
               <Empty icon={ScanLine} title="No partner yet" description="Scan the partner's QR or type their code to see who they are and the offer." />
             ) : !offer ? (
-              preview.isFetching && !data ? (
-                <p className="py-6 text-center text-sm text-muted-foreground">Checking the code…</p>
+              updating || !data ? (
+                <PartnerSkeleton />
               ) : (
-                <Alert tone="danger">{data?.codeError?.message ?? (preview.isError ? errorMessage(preview.error) : "Checking the code…")}</Alert>
+                <Alert tone="danger">{data.codeError?.message ?? (preview.isError ? errorMessage(preview.error) : "This code could not be checked")}</Alert>
               )
             ) : (
               <div className="space-y-4">
@@ -269,8 +281,8 @@ export default function PartnerSalePage() {
             )}
           </Card>
 
-          <Card title="Final bill" icon={ReceiptIndianRupee}>
-            <dl className="tabular space-y-2 text-sm">
+          <Card title="Final bill" icon={ReceiptIndianRupee} actions={updating && billAmount ? <InlineLoading>Updating…</InlineLoading> : undefined}>
+            <dl className={cn("tabular space-y-2 text-sm transition-opacity", updating && "opacity-50")} aria-busy={updating}>
               <Row label="Bill amount" value={inr(billAmount ?? null)} />
               <Row label="Partner discount" value={amounts ? `− ${inr(amounts.discountAmount)}` : "—"} highlight={!!amounts?.discountAmount} />
               <div className="flex items-baseline justify-between border-t border-border pt-3">
@@ -292,7 +304,7 @@ export default function PartnerSalePage() {
               <Field label="Notes">
                 <Textarea rows={2} {...register("notes")} />
               </Field>
-              <Button type="submit" className="w-full" icon={<HandCoins className="size-4" />} loading={record.isPending} disabled={!amounts || !!codeError}>
+              <Button type="submit" className="w-full" icon={<HandCoins className="size-4" />} loading={record.isPending} disabled={!amounts || !!codeError || updating}>
                 Record sale
               </Button>
               <RequiredNote />
@@ -311,6 +323,23 @@ export default function PartnerSalePage() {
         }}
       />
     </>
+  );
+}
+
+/** Stands in for the partner while their code is checked: avatar, name, and the offer box. */
+function PartnerSkeleton() {
+  return (
+    <div role="status" className="space-y-4">
+      <span className="sr-only">Checking the code…</span>
+      <div className="flex items-center gap-3">
+        <Skeleton className="size-11 rounded-full motion-reduce:animate-none" />
+        <div className="flex-1 space-y-2">
+          <Skeleton className="h-4 w-40 motion-reduce:animate-none" />
+          <Skeleton className="h-3 w-24 motion-reduce:animate-none" />
+        </div>
+      </div>
+      <Skeleton className="h-16 w-full rounded-lg motion-reduce:animate-none" />
+    </div>
   );
 }
 

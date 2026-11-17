@@ -7,7 +7,7 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { QrShareModal } from "@/components/qr-share-modal";
-import { Alert, Badge, Button, Card, Checkbox, ConfirmDialog, Empty, ErrorState, Field, HIDE_BELOW, Input, Modal, PageHeader, SelectInput, Spinner, Stat, StatusBadge, Table, Td, Th } from "@/components/ui";
+import { Alert, Badge, Button, Card, Checkbox, ConfirmDialog, Empty, ErrorState, Field, HIDE_BELOW, Input, Modal, PageHeader, PageSkeleton, SelectInput, Stat, StatusBadge, Table, TableSkeleton, Td, Th } from "@/components/ui";
 import { api, errorMessage } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { dateTime, inrShort, number, points } from "@/lib/format";
@@ -51,7 +51,7 @@ export function CampaignView() {
     onError: (err) => toast.error(errorMessage(err)),
   });
 
-  if (isLoading) return <Spinner />;
+  if (isLoading) return <PageSkeleton stats={4} kind="detail" />;
   if (error || !data) {
     return (
       <>
@@ -287,7 +287,7 @@ function EnrollModal({
       }
     >
       {isLoading ? (
-        <Spinner />
+        <TableSkeleton />
       ) : options.length === 0 ? (
         <p className="text-sm text-muted-foreground">
           Every active partner is already in this campaign.{" "}

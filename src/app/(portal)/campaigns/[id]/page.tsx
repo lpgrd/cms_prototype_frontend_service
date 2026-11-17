@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import { Spinner } from "@/components/ui";
+import { PageSkeleton } from "@/components/ui";
 import { CampaignView } from "./campaign-view";
 
 export default function CampaignPage() {
   return (
-    <Suspense fallback={<Spinner />}>
+    <Suspense fallback={<PageSkeleton kind="detail" />}>
       <CampaignView />
     </Suspense>
   );
