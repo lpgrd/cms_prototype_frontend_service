@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { QrScannerModal } from "@/components/qr-scanner";
 import { Alert, Badge, Button, Card, Checkbox, Field, FormDatePicker, FormSelect, Input, MaskedInput, PageHeader, RequiredNote, Textarea } from "@/components/ui";
 import { api, errorMessage } from "@/lib/api";
+import { codeFromScan } from "@/lib/partner-code";
 import { date, inr, inrShort, plural, points } from "@/lib/format";
 import type { BillPreview, Customer, MetalType, OtpChallenge, Transaction } from "@/lib/types";
 import { useDebounced } from "@/hooks/use-debounced";
@@ -331,7 +332,12 @@ export default function BillingPage() {
           {/* Partner code */}
           <Card title="Partner offer" icon={BadgePercent}>
             <div className="flex gap-2">
-              <Input placeholder="Scan QR or type code" className="font-mono" {...register("code")} />
+              <Input
+                  placeholder="Scan QR or type code"
+                  className="font-mono"
+                  // USB scanners type the whole QR link into the field; keep just the code.
+                  {...register("code", { onChange: (e) => setValue("code", codeFromScan(e.target.value)) })}
+                />
               <Button type="button" variant="secondary" icon={<ScanLine className="size-4" />} onClick={() => setScanOpen(true)}>
                 Scan
               </Button>
@@ -529,7 +535,7 @@ export default function BillingPage() {
         open={scanOpen}
         onClose={() => setScanOpen(false)}
         onScan={(text) => {
-          setValue("code", text, { shouldDirty: true });
+          setValue("code", codeFromScan(text), { shouldDirty: true });
           setScanOpen(false);
           toast.success("Code scanned");
         }}

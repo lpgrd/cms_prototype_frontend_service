@@ -11,6 +11,7 @@ import { QrScannerModal } from "@/components/qr-scanner";
 import { Alert, Badge, Button, Card, Empty, Field, Input, MaskedInput, PageHeader, RequiredNote, Textarea } from "@/components/ui";
 import { useDebounced } from "@/hooks/use-debounced";
 import { api, errorMessage } from "@/lib/api";
+import { codeFromScan } from "@/lib/partner-code";
 import { date, inr, partnerTypeLabel, points } from "@/lib/format";
 import type { Customer, OtpChallenge, PartnerSale, SalePreview } from "@/lib/types";
 
@@ -151,7 +152,12 @@ export default function PartnerSalePage() {
 
             <Field label="Partner code" required className="mt-4">
               <div className="flex gap-2">
-                <Input placeholder="Scan QR or type code" className="font-mono uppercase" {...register("code")} />
+                <Input
+                  placeholder="Scan QR or type code"
+                  className="font-mono uppercase"
+                  // USB scanners type the whole QR link into the field; keep just the code.
+                  {...register("code", { onChange: (e) => setValue("code", codeFromScan(e.target.value)) })}
+                />
                 <Button type="button" icon={<ScanLine className="size-4" />} onClick={() => setScanOpen(true)}>
                   Scan
                 </Button>
@@ -299,7 +305,7 @@ export default function PartnerSalePage() {
         open={scanOpen}
         onClose={() => setScanOpen(false)}
         onScan={(text) => {
-          setValue("code", text, { shouldDirty: true });
+          setValue("code", codeFromScan(text), { shouldDirty: true });
           setScanOpen(false);
           toast.success("Code scanned");
         }}

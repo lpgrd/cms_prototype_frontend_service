@@ -31,7 +31,10 @@ test("the counter enters a bill, scans a partner code and records the sale", asy
   await page.getByRole("spinbutton", { name: /^Bill amount/ }).fill("50000");
   const billNo = `E2E/${mobile.slice(-6)}`;
   await page.getByRole("textbox", { name: /^Bill number/ }).fill(billNo);
-  await page.getByPlaceholder("Scan QR or type code").fill(code);
+  // A scanner types the whole QR link; the field keeps only the code.
+  const codeField = page.getByPlaceholder("Scan QR or type code");
+  await codeField.fill(`http://localhost:3001/r/${code.toLowerCase()}`);
+  await expect(codeField).toHaveValue(code);
   const customerMobile = uniqueMobile();
   await page.getByRole("combobox", { name: /^Mobile number/ }).fill(customerMobile);
   await page.getByRole("textbox", { name: /^Name/ }).fill("E2E Sale Customer");
